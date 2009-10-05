@@ -1,4 +1,34 @@
 ﻿#!/usr/local/bin/python2.4
+# -*- coding: utf-8 -*-
+
+"""
+Setup steps:
+
+  1. Create a cron config file:
+       $ touch /etc/cron.d/web-ping
+
+  2. Add in it the following configuration:
+       0 * * * * www-data /usr/local/bin/python2.4 /var/tools/web-ping.py > /var/tools/web-ping-results.html
+
+  3. Create a new config file for apache:
+       $ touch /var/tools/web-ping.conf
+
+  4. And add the following directives:
+       Listen 82
+       <VirtualHost intranet.example.com:82>
+         DocumentRoot /var/tools/
+         DirectoryIndex web-ping-results.html
+         # Redirect any request to the default directory root index
+         RedirectMatch permanent ^/.+ http://intranet.example.com:82/
+       </VirtualHost>
+
+  5. Then edit your main apache config:
+       $ vi /var/httpd/httpd-2.2/conf/httpd.conf
+
+  6. And add the following directive:
+       Include /var/tools/web-ping.conf
+
+"""
 
 import datetime
 import urllib2
