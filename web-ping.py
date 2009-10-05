@@ -19,7 +19,9 @@ Setup steps:
          DocumentRoot /var/tools/
          DirectoryIndex web-ping-results.html
          # Redirect any request to the default directory root index
-         RedirectMatch permanent ^/.+ http://intranet.example.com:82/
+         RewriteEngine on
+         RewriteCond %{REQUEST_URI} !/web-ping-results.html$
+         RewriteRule $ /web-ping-results.html [R=301,L]
        </VirtualHost>
 
   5. Then edit your main apache config:
