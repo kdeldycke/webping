@@ -56,7 +56,7 @@ for check in CHECK_LIST:
   # Get the page and start the analysis to guess state
   try:
     page_content = urllib2.urlopen(check['url']).read()
-  except urllib2.HTTPError:
+  except urllib2.URLError, urllib2.HTTPError:
     result['state'] = 'fail'
     result['status_msg'] = sys.exc_value
     # Proceed to next item
@@ -114,7 +114,7 @@ header = """
       table .empty_string {color: #999; font-style: italic}
       table .unchecked {background-color: #ccc;    color: #000}
       table .ok        {background-color: #0ab006; color: #fff}
-      table .dubious   {background-color: #ed9022; color: #fff}
+      table .dubious   {background-color: #ff7c00; color: #fff}
       table .fail      {background-color: #e13737; color: #fff}
     -->
     </style>
