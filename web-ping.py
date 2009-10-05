@@ -56,7 +56,9 @@ for check in CHECK_LIST:
   # Get the page and start the analysis to guess state
   try:
     fetcher = urllib2.urlopen(check['url'])
-    fetcher.addheaders = [{'User-agent': 'WebPing (http://intranet.example.com:82)'}]
+    fetcher.addheaders = [{'User-agent': "WebPing"
+                         , 'Referer'   : "http://intranet.example.com:82"
+                         }]
     page_content = fetcher.read()
   except urllib2.URLError, urllib2.HTTPError:
     result['state'] = 'fail'
