@@ -55,7 +55,9 @@ for check in CHECK_LIST:
   result['update_time'] = datetime.datetime.now(TIMEZONE).isoformat(' ')
   # Get the page and start the analysis to guess state
   try:
-    page_content = urllib2.urlopen(check['url']).read()
+    fetcher = urllib2.urlopen(check['url'])
+    fetcher.addheaders = [{'User-agent': 'WebPing (http://intranet.example.com:82)'}]
+    page_content = fetcher.read()
   except urllib2.URLError, urllib2.HTTPError:
     result['state'] = 'fail'
     result['status_msg'] = sys.exc_value
