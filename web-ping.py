@@ -55,6 +55,9 @@ import socket
 import urllib2
 import sys
 
+# HTML safe
+getSafeString = lambda s: ('%s' % s).replace('<', '&lt;').replace('>', '&gt;')
+
 result_list = []
 # Last night the urllib2 Missing Manual saved my life: http://www.voidspace.org.uk/python/articles/urllib2.shtml
 socket.setdefaulttimeout(TIMEOUT)
@@ -78,9 +81,21 @@ for check in CHECK_LIST:
                          , 'Referer'   : "http://intranet.example.com:82"
                          }]
     page_content = fetcher.read()
-  except urllib2.URLError, urllib2.HTTPError:
+  except urllib2.HTTPError:
     result['state'] = 'fail'
-    result['status_msg'] = sys.exc_value
+    result['status_msg'] = getSafeString(sys.exc_value)
+    # Proceed to next item
+    result_list.append(result)
+    continue
+  except urllib2.URLError, e:
+    result['state'] = 'fail'
+    # Try to print a useful error message
+    if isinstance(e.reason, socket.timeout):
+      result['status_msg'] = "Socket timed out after %s seconds" % TIMEOUT
+    elif isinstance(e.reason, socket.error):
+      result['status_msg'] = "Network Error %s: %s" % (e.reason[0], e.reason[1])
+    else:
+      result['status_msg'] = "Unknown error: %s " % getSafeString(sys.exc_value)
     # Proceed to next item
     result_list.append(result)
     continue
