@@ -30,16 +30,32 @@ Setup steps:
 
 """
 
-import datetime
-import urllib2
-import sys
+############################ START OF USER CONFIG ############################
 
 CHECK_LIST = []
 
+# TODO
+# List of mails to send reports to
 MAILING_LIST = []
+
+# TODO
 TIMEZONE = None
 
+#Sockets timeout in seconds
+TIMEOUT = 30
+
+############################# END OF USER CONFIG #############################
+
+
+
+import datetime
+import socket
+import urllib2
+import sys
+
 result_list = []
+# Last night the urllib2 Missing Manual saved my life: http://www.voidspace.org.uk/python/articles/urllib2.shtml
+socket.setdefaulttimeout(TIMEOUT)
 for check in CHECK_LIST:
   # Init and normalize result items
   result = check.copy()
