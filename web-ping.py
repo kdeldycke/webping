@@ -62,7 +62,7 @@ getSafeString = lambda s: ('%s' % s).replace('<', '&lt;').replace('>', '&gt;')
 result_list = []
 # Last night the urllib2 Missing Manual saved my life: http://www.voidspace.org.uk/python/articles/urllib2.shtml
 socket.setdefaulttimeout(TIMEOUT)
-for check in CHECK_LIST:
+for check in CHECK_LIST.sort(lambda a, b: cmp(a['url'], b['url'])):
   # Init and normalize result items
   result = check.copy()
   result['state'] = 'unchecked'
