@@ -137,6 +137,11 @@ header = """
         color: #333;
       }
 
+      abbr {
+        cursor: help;
+        border-bottom-width: 0;
+      }
+
       table {
         border-collapse: collapse;
         border-left: 1px solid #686868;
