@@ -42,7 +42,7 @@ MAILING_LIST = []
 
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 # TODO
-TIMEZONE        = None
+TIMEZONE = None
 
 #Sockets timeout in seconds
 TIMEOUT = 30
@@ -76,7 +76,8 @@ for check in CHECK_LIST:
   else:
     result['str_msg'] = "&#171;&nbsp;%s&nbsp;&#187;" % result['str']
     result['str_class'] = None
-  result['update_time'] = datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
+  result['update_time'] = datetime.datetime.now(TIMEZONE).isoformat(' ')
+  result['update_msg']  = datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
   # Get the page and start the analysis to guess state
   try:
     fetcher = urllib2.urlopen(check['url'])
@@ -181,7 +182,7 @@ body += '\n'.join(["""
           <td><a href="%(url)s">%(url)s</a></td>
           <td class="%(str_class)s">%(str_msg)s</td>
           <td class="%(state)s">%(status_msg)s</td>
-          <td class="time">%(update_time)s</td>
+          <td class="time"><abbr title="%(update_time)s">%(update_msg)s</abbr></td>
         </tr>
 """ % i for i in result_list])
 
