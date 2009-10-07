@@ -68,7 +68,7 @@ for check in CHECK_LIST:
   result['state'] = 'unchecked'
   result['status_msg'] = "Unchecked"
   if not result.has_key('str') or not result['str'].strip():
-    result['str_msg'] = "Not looking for a particular string"
+    result['str_msg'] = "None"
     result['str'] = None
     result['str_class'] = 'empty_string'
   else:
@@ -168,7 +168,7 @@ body = """
           <th>URL to check</th>
           <th>String to search</th>
           <th>Status</th>
-          <th>Latest update</th>
+          <th>Last check</th>
         </tr>
       </thead>
       <tbody>
