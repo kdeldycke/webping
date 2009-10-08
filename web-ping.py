@@ -55,6 +55,8 @@ import datetime
 import socket
 import urllib2
 import sys
+import StringIO
+import gzip
 
 # HTML safe
 getSafeString = lambda s: ('%s' % s).replace('<', '&lt;').replace('>', '&gt;')
@@ -85,6 +87,21 @@ for check in CHECK_LIST:
                          , 'Referer'   : "http://intranet.example.com:82"
                          }]
     page_content = fetcher.read()
+    # Decode page content
+    # Source: http://www.diveintopython.org/http_web_services/gzip_compression.html
+    encoding = fetcher.headers.get('content-encoding', None)
+    if encoding == 'gzip':
+      page_content = gzip.GzipFile(fileobj = StringIO.StringIO(page_content)).read()
+    elif encoding != None:
+      result['state'] = 'fail'
+      result['status_msg'] = "Unsupported encoding"
+      # Proceed to next item
+      result_list.append(result)
+      continue
+    # TODO: Convert character encoding to unicode
+    # Source: http://stackoverflow.com/questions/1407874/python-urllib-minidom-and-parsing-international-characters/1408052#1408052
+    charset = fetcher.headers.get('content-type', None).split('charset=')[1]
+    # page_content.decode(charset).encode('utf-8')
   except urllib2.HTTPError:
     result['state'] = 'fail'
     result['status_msg'] = getSafeString(sys.exc_value)
