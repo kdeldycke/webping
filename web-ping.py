@@ -1,37 +1,6 @@
 ﻿#!/usr/local/bin/python2.4
 # -*- coding: utf-8 -*-
 
-"""
-Setup steps:
-
-  1. Create a cron config file:
-       $ touch /etc/cron.d/web-ping
-
-  2. Add in it the following configuration:
-       0 * * * * www-data /usr/local/bin/python2.4 /var/tools/web-ping.py > /var/tools/web-ping-results.html
-
-  3. Create a new config file for apache:
-       $ touch /var/tools/web-ping.conf
-
-  4. And add the following directives:
-       Listen 82
-       <VirtualHost intranet.example.com:82>
-         DocumentRoot /var/tools/
-         DirectoryIndex web-ping-results.html
-         # Redirect any request to the default directory root index
-         RewriteEngine on
-         RewriteCond %{REQUEST_URI} !/web-ping-results.html$
-         RewriteRule $ /web-ping-results.html [R=301,L]
-       </VirtualHost>
-
-  5. Then edit your main apache config:
-       $ vi /var/httpd/httpd-2.2/conf/httpd.conf
-
-  6. And add the following directive:
-       Include /var/tools/web-ping.conf
-
-"""
-
 ############################ START OF USER CONFIG ############################
 
 CHECK_LIST = []
