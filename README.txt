@@ -5,7 +5,7 @@ Setup steps
        $ touch /etc/cron.d/web-ping
 
   2. Add in it the following configuration:
-       0 * * * * www-data /usr/local/bin/python2.4 /var/tools/web-ping/web-ping.py > /var/tools/web-ping/web-ping-results.html
+       0 * * * * root /usr/local/bin/python2.4 /var/tools/web-ping/web-ping.py > /var/tools/web-ping/web-ping-results.html
 
   3. Edit WebPing's apache configuration to adjust parameters if necessary:
        $ vi /var/tools/web-ping/web-ping.conf
