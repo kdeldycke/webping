@@ -30,6 +30,10 @@ import gzip
 # HTML safe
 getSafeString = lambda s: ('%s' % s).replace('<', '&lt;').replace('>', '&gt;')
 
+# HTML right padding
+PAD = 3
+padNumber = lambda value: "%s%d" % ((PAD - len(str(value))) * '&ensp;', value)
+
 result_list = []
 # Last night the urllib2 Missing Manual saved my life: http://www.voidspace.org.uk/python/articles/urllib2.shtml
 socket.setdefaulttimeout(TIMEOUT)
@@ -98,7 +102,7 @@ for check in CHECK_LIST:
   else:
     # Can't find the string
     if page_content.find(result['str']) == -1:
-      result['state'] = 'dubious'
+      result['state'] = 'warning'
       result['status_msg'] = "Page fetched but string not found"
       result_list.append(result)
       continue
@@ -129,6 +133,12 @@ header = """
         border-bottom-width: 0;
       }
 
+      ul span {font-weight: bold}
+      ul .unchecked {color: #ccc}
+      ul .ok        {color: #0ab006}
+      ul .warning   {color: #ff7c00}
+      ul .fail      {color: #e13737}
+
       table {
         border-collapse: collapse;
         border-left: 1px solid #686868;
@@ -147,7 +157,7 @@ header = """
       table .empty_string {color: #999; font-style: italic}
       table .unchecked {background-color: #ccc;    color: #000}
       table .ok        {background-color: #0ab006; color: #fff}
-      table .dubious   {background-color: #ff7c00; color: #fff}
+      table .warning   {background-color: #ff7c00; color: #fff}
       table .fail      {background-color: #e13737; color: #fff}
     -->
     </style>
@@ -156,8 +166,17 @@ header = """
 """
 
 body = """
+    <h1>WebPing dashboard</h1>
+    <p>Summary:
+      <ul>
+        <li><span>%(total)s</span> sites monitored</li>
+        <li><span class="fail">%(fail)s</span> error</li>
+        <li><span class="warning">%(warning)s</span> warning</li>
+        <li><span class="ok">%(ok)s</span> ok</li>
+        <li><span class="unchecked">%(unchecked)s</span> unchecked</li>
+      </ul>
+    </p>
     <table>
-      <caption>WebPing dashboard</caption>
       <thead>
         <tr>
           <th>URL to check</th>
@@ -167,7 +186,12 @@ body = """
         </tr>
       </thead>
       <tbody>
-"""
+""" % { 'total'    : padNumber(len(result_list))
+      , 'unchecked': padNumber(len([r for r in result_list if r['state'] == 'unchecked']))
+      , 'ok'       : padNumber(len([r for r in result_list if r['state'] == 'ok'       ]))
+      , 'warning'  : padNumber(len([r for r in result_list if r['state'] == 'warning'  ]))
+      , 'fail'     : padNumber(len([r for r in result_list if r['state'] == 'fail'     ]))
+      }
 
 body += '\n'.join(["""
         <tr>
