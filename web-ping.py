@@ -133,6 +133,7 @@ header = """
         border-bottom-width: 0;
       }
 
+      ul {list-style-type: none}
       ul span {font-weight: bold}
       ul .unchecked {color: #ccc}
       ul .ok        {color: #0ab006}
