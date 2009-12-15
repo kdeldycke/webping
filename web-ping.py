@@ -64,6 +64,9 @@ for check in CHECK_LIST:
   else:
     result['str_msg'] = "&#171;&nbsp;%s&nbsp;&#187;" % result['str']
     result['str_class'] = None
+  # Beautify URL
+  result['url_msg'] = """<span class="protocol">%s://</span><span class="domain">%s</span><span class="url-trail">%s%s%s%s</span>""" % urlparse(check['url'])
+  # Get time data
   result['update_time'] = datetime.datetime.now(TIMEZONE).isoformat(' ')
   result['update_msg']  = datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
   # Get the page and start the analysis to guess state
@@ -185,6 +188,9 @@ header = """
         color: #333;
       }
 
+      a {text-decoration: none}
+      a:hover {text-decoration: underline}
+
       abbr {
         cursor: help;
         border-bottom-width: 0;
@@ -194,9 +200,7 @@ header = """
         float: left;
         padding: 0 40px;
       }
-      .c1 {
-        border-right: 1px dotted #ccc;
-      }
+      .c1 {border-right: 1px dotted #ccc}
 
       ul.center-aligned {list-style-type: none}
       ul span {font-weight: bold}
@@ -213,15 +217,12 @@ header = """
         clear: both;
         margin: 20px 0 0;
       }
-      table tr {
-        border: 1px solid #686868;   
-      }
-      table caption, table th {
-        font-weight: bold;
-      }
-      table caption, table th, table td {
-        padding: 4px 10px;
-      }
+      table tr {border: 1px solid #686868}
+      table caption, table th           {font-weight: bold}
+      table caption, table th, table td {padding: 4px 10px}
+      table a .protocol  {color: #999}
+      table a .domain    {font-weight: bold}
+      table a .url-trail {font-size: .7em}
       table .empty_string {color: #999; font-style: italic}
       table .fail      {background-color: #e13737; color: #fff}
       table .warning   {background-color: #ff7c00; color: #fff}
@@ -275,7 +276,7 @@ body += """
 
 body += '\n'.join(["""
         <tr>
-          <td><a href="%(url)s">%(url)s</a></td>
+          <td><a href="%(url)s">%(url_msg)s</a></td>
           <td class="%(str_class)s">%(str_msg)s</td>
           <td class="%(state)s">%(status_msg)s</td>
           <td class="time"><abbr title="%(update_time)s">%(update_msg)s</abbr></td>
