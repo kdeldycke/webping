@@ -3,6 +3,9 @@
 
 ############################ START OF USER CONFIG ############################
 
+# The filepath of the report we want to produce
+DESTINATION_REPORT_FILE = "/var/tools/web-ping/index.html"
+
 CHECK_LIST = []
 
 # TODO
@@ -113,7 +116,7 @@ for check in CHECK_LIST:
   result_list.append(result)
   
 
-# Print nice HTML
+# Produce a nice HTML report ready to be published by Apache
 header = """
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -213,4 +216,6 @@ footer = """
 </html>
 """
 
-print header + body + footer
+html_report = open(DESTINATION_REPORT_FILE, 'w')
+html_report.write(header + body + footer)
+html_report.close()
