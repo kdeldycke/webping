@@ -127,6 +127,8 @@ warning_count   = len([r for r in result_list if r['state'] == 'warning'  ])
 ok_count        = len([r for r in result_list if r['state'] == 'ok'       ])
 unchecked_count = len([r for r in result_list if r['state'] == 'unchecked'])
 
+# Sort mail for beautiful display
+MAILING_LIST.sort()
 # As soon as we're done with data gathering, send alerts by mail if something is wrong
 if fail_count > 0 or warning_count > 0:
   mail_template = """WebPing has detected:
@@ -177,7 +179,15 @@ header = """
         border-bottom-width: 0;
       }
 
-      ul {list-style-type: none}
+      .column {
+        float: left;
+        padding: 0 40px;
+      }
+      .c1 {
+        border-right: 1px dotted #ccc;
+      }
+
+      ul.center-aligned {list-style-type: none}
       ul span {font-weight: bold}
       ul .fail      {color: #e13737}
       ul .warning   {color: #ff7c00}
@@ -189,6 +199,8 @@ header = """
         border-left: 1px solid #686868;
         border-right: 1px solid #686868;
         text-align: left;
+        clear: both;
+        margin: 20px 0 0;
       }
       table tr {
         border: 1px solid #686868;   
@@ -212,15 +224,33 @@ header = """
 
 body = """
     <h1>WebPing dashboard</h1>
-    <p>Summary:
-      <ul>
+
+    <div class="column c1">
+      <p>Summary:</p>
+      <ul class="center-aligned">
         <li><span>%(total)s</span> sites monitored</li>
         <li><span class="fail">%(fail)s</span> error</li>
         <li><span class="warning">%(warning)s</span> warning</li>
         <li><span class="ok">%(ok)s</span> ok</li>
         <li><span class="unchecked">%(unchecked)s</span> unchecked</li>
       </ul>
-    </p>
+    </div>
+    
+    <div class="column c2">
+      <p>People receiving mail alerts:</p>
+      <ul>""" % { 'total'    : padNumber(total_count)
+                , 'fail'     : padNumber(fail_count)
+                , 'warning'  : padNumber(warning_count)
+                , 'ok'       : padNumber(ok_count)
+                , 'unchecked': padNumber(unchecked_count)
+                }
+
+body += '\n'.join(["<li>%s</li>" % email for email in MAILING_LIST])
+
+body += """
+      </ul>
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -230,13 +260,7 @@ body = """
           <th>Last check</th>
         </tr>
       </thead>
-      <tbody>
-""" % { 'total'    : padNumber(total_count)
-      , 'fail'     : padNumber(fail_count)
-      , 'warning'  : padNumber(warning_count)
-      , 'ok'       : padNumber(ok_count)
-      , 'unchecked': padNumber(unchecked_count)
-      }
+      <tbody>"""
 
 body += '\n'.join(["""
         <tr>
@@ -244,19 +268,16 @@ body += '\n'.join(["""
           <td class="%(str_class)s">%(str_msg)s</td>
           <td class="%(state)s">%(status_msg)s</td>
           <td class="time"><abbr title="%(update_time)s">%(update_msg)s</abbr></td>
-        </tr>
-""" % i for i in result_list])
+        </tr>""" % i for i in result_list])
 
 body += """
       </tbody>
-    </table>
-"""
+    </table>"""
 
 footer = """
     <p>HTML report generated at %s</p>
   </body>
-</html>
-""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
+</html>""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
 
 html_report = open(DESTINATION_REPORT_FILE, 'w')
 html_report.write(header + body + footer)
