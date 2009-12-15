@@ -3,10 +3,12 @@
 
 ############################ START OF USER CONFIG ############################
 
-# The filepath of the report we want to produce
-DESTINATION_REPORT_FILE = "/var/www/WebPing/index.html"
-
 CHECK_LIST = []
+
+# The filepath of the report we want to produce.
+# Can be an absolute file system path like /var/www/WebPing/index.html
+# or a relative path from this script location.
+DESTINATION_REPORT_FILE = "index.html"
 
 # Configuration of the SMTP mail server
 MAIL_SERVER  = "localhost"
@@ -33,6 +35,7 @@ import sys
 import StringIO
 import gzip
 import smtplib
+from os.path        import abspath
 from email.MIMEText import MIMEText
 
 # HTML safe
@@ -280,6 +283,6 @@ footer = """
   </body>
 </html>""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
 
-html_report = open(DESTINATION_REPORT_FILE, 'w')
+html_report = open(abspath(DESTINATION_REPORT_FILE), 'w')
 html_report.write(header + body + footer)
 html_report.close()
