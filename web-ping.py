@@ -8,7 +8,10 @@ DESTINATION_REPORT_FILE = "/var/www/WebPing/index.html"
 
 CHECK_LIST = []
 
-# TODO
+# Configuration of the SMTP mail server
+MAIL_SERVER  = "localhost"
+# Identity under which we're sending mail alerts
+FROM_ADDRESS = "WebPing <webping@example.com>"
 # List of mails to send reports to
 MAILING_LIST = []
 
@@ -29,6 +32,8 @@ import urllib2
 import sys
 import StringIO
 import gzip
+import smtplib
+from email.MIMEText import MIMEText
 
 # HTML safe
 getSafeString = lambda s: ('%s' % s).replace('<', '&lt;').replace('>', '&gt;')
@@ -77,7 +82,7 @@ for check in CHECK_LIST:
       continue
     # TODO: Convert character encoding to unicode
     # Source: http://stackoverflow.com/questions/1407874/python-urllib-minidom-and-parsing-international-characters/1408052#1408052
-    charset = fetcher.headers.get('content-type', None).split('charset=')[1]
+    # charset = fetcher.headers.get('content-type', None).split('charset=')[1]
     # page_content.decode(charset).encode('utf-8')
   except urllib2.HTTPError:
     result['state'] = 'fail'
@@ -114,7 +119,43 @@ for check in CHECK_LIST:
     result['status_msg'] = "String found at given URL"
   # Compile a list of results
   result_list.append(result)
-  
+
+# Pre-compute some stats
+total_count     = len(result_list)
+fail_count      = len([r for r in result_list if r['state'] == 'fail'     ])
+warning_count   = len([r for r in result_list if r['state'] == 'warning'  ])
+ok_count        = len([r for r in result_list if r['state'] == 'ok'       ])
+unchecked_count = len([r for r in result_list if r['state'] == 'unchecked'])
+
+# As soon as we're done with data gathering, send alerts by mail if something is wrong
+if fail_count > 0 or warning_count > 0:
+  mail_template = """WebPing has detected:
+  * %s failures
+  * %s warnings
+
+""" % ( fail_count
+      , warning_count
+      )
+  for result in [i for i in result_list if i['state'] in ['warning', 'fail']]:
+    mail_template += """URL: %(url)s
+  * Status         : %(state)s
+  * Error message  : %(status_msg)s
+  * String searched: %(str)s
+  * Check time     : %(update_msg)s
+
+""" % result
+  mail_template += """Mail alert generated at %s""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
+  mail_msg = MIMEText(mail_template)
+  mail_msg['From'] = FROM_ADDRESS
+  mail_msg['Subject'] = "[WebPing] Alert: %s" % ', '.join([s for s in [fail_count and "%s failures" % fail_count or None, warning_count and "%s warnings" % warning_count or None] if s])
+  mail_msg['To'] = ', '.join(MAILING_LIST)
+  # Temporarily increase socket timeout to contact mail server
+  socket.setdefaulttimeout(60)
+  mail_server = smtplib.SMTP(MAIL_SERVER)
+  mail_server.sendmail(FROM_ADDRESS, MAILING_LIST, mail_msg.as_string())
+  mail_server.close()
+  # Set back to a more reasonable time out
+  socket.setdefaulttimeout(TIMEOUT)
 
 # Produce a nice HTML report ready to be published by Apache
 header = """
@@ -138,10 +179,10 @@ header = """
 
       ul {list-style-type: none}
       ul span {font-weight: bold}
-      ul .unchecked {color: #ccc}
-      ul .ok        {color: #0ab006}
-      ul .warning   {color: #ff7c00}
       ul .fail      {color: #e13737}
+      ul .warning   {color: #ff7c00}
+      ul .ok        {color: #0ab006}
+      ul .unchecked {color: #ccc}
 
       table {
         border-collapse: collapse;
@@ -159,10 +200,10 @@ header = """
         padding: 4px 10px;
       }
       table .empty_string {color: #999; font-style: italic}
-      table .unchecked {background-color: #ccc;    color: #000}
-      table .ok        {background-color: #0ab006; color: #fff}
-      table .warning   {background-color: #ff7c00; color: #fff}
       table .fail      {background-color: #e13737; color: #fff}
+      table .warning   {background-color: #ff7c00; color: #fff}
+      table .ok        {background-color: #0ab006; color: #fff}
+      table .unchecked {background-color: #ccc;    color: #000}
     -->
     </style>
   </head>
@@ -190,11 +231,11 @@ body = """
         </tr>
       </thead>
       <tbody>
-""" % { 'total'    : padNumber(len(result_list))
-      , 'unchecked': padNumber(len([r for r in result_list if r['state'] == 'unchecked']))
-      , 'ok'       : padNumber(len([r for r in result_list if r['state'] == 'ok'       ]))
-      , 'warning'  : padNumber(len([r for r in result_list if r['state'] == 'warning'  ]))
-      , 'fail'     : padNumber(len([r for r in result_list if r['state'] == 'fail'     ]))
+""" % { 'total'    : padNumber(total_count)
+      , 'fail'     : padNumber(fail_count)
+      , 'warning'  : padNumber(warning_count)
+      , 'ok'       : padNumber(ok_count)
+      , 'unchecked': padNumber(unchecked_count)
       }
 
 body += '\n'.join(["""
@@ -212,9 +253,10 @@ body += """
 """
 
 footer = """
+    <p>HTML report generated at %s</p>
   </body>
 </html>
-"""
+""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
 
 html_report = open(DESTINATION_REPORT_FILE, 'w')
 html_report.write(header + body + footer)
