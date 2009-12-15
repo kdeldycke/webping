@@ -4,7 +4,7 @@
 ############################ START OF USER CONFIG ############################
 
 # The filepath of the report we want to produce
-DESTINATION_REPORT_FILE = "/var/tools/web-ping/index.html"
+DESTINATION_REPORT_FILE = "/var/www/WebPing/index.html"
 
 CHECK_LIST = []
 
