@@ -46,7 +46,8 @@ result_list = []
 # Last night the urllib2 Missing Manual saved my life: http://www.voidspace.org.uk/python/articles/urllib2.shtml
 socket.setdefaulttimeout(TIMEOUT)
 # Display and process items by URLs
-CHECK_LIST.sort(lambda a, b: cmp(a['url'], b['url']))
+delProtocol = lambda s: s.split('://', 1)[-1]
+CHECK_LIST.sort(lambda a, b: cmp(delProtocol(a['url']), delProtocol(b['url'])))
 for check in CHECK_LIST:
   # Init and normalize result items
   result = check.copy()
