@@ -238,7 +238,7 @@ body = """
     <h1>WebPing dashboard</h1>
 
     <div class="column c1">
-      <p>Summary:</p>
+      <p><strong>Summary</strong>:</p>
       <ul class="center-aligned">
         <li><span>%(total)s</span> sites monitored</li>
         <li><span class="fail">%(fail)s</span> error</li>
@@ -249,7 +249,7 @@ body = """
     </div>
     
     <div class="column c2">
-      <p>People receiving mail alerts:</p>
+      <p><strong>People receiving mail alerts</strong>:</p>
       <ul>""" % { 'total'    : padNumber(total_count)
                 , 'fail'     : padNumber(fail_count)
                 , 'warning'  : padNumber(warning_count)
