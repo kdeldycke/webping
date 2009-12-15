@@ -36,6 +36,7 @@ import StringIO
 import gzip
 import smtplib
 from os.path        import abspath
+from urlparse       import urlparse
 from email.MIMEText import MIMEText
 
 # HTML safe
@@ -49,8 +50,8 @@ result_list = []
 # Last night the urllib2 Missing Manual saved my life: http://www.voidspace.org.uk/python/articles/urllib2.shtml
 socket.setdefaulttimeout(TIMEOUT)
 # Display and process items by URLs
-delProtocol = lambda s: s.split('://', 1)[-1]
-CHECK_LIST.sort(lambda a, b: cmp(delProtocol(a['url']), delProtocol(b['url'])))
+delProtocol = lambda c: ''.join(list(urlparse(c['url'])[1:]))
+CHECK_LIST.sort(lambda a, b: cmp(delProtocol(a), delProtocol(b)))
 for check in CHECK_LIST:
   # Init and normalize result items
   result = check.copy()
