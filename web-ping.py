@@ -136,6 +136,7 @@ unchecked_count = len([r for r in result_list if r['state'] == 'unchecked'])
 MAILING_LIST.sort()
 # As soon as we're done with data gathering, send alerts by mail if something is wrong
 if fail_count > 0 or warning_count > 0:
+  # Generate mail message header
   mail_template = """WebPing has detected:
   * %s failures
   * %s warnings
@@ -143,21 +144,26 @@ if fail_count > 0 or warning_count > 0:
 """ % ( fail_count
       , warning_count
       )
-  for result in [i for i in result_list if i['state'] in ['warning', 'fail']]:
-    mail_template += """URL: %(url)s
+  # Display failures first then warnings
+  for status in ['fail', 'warning']:
+    for result in [i for i in result_list if i['state'] == status]:
+      mail_template += """URL: %(url)s
   * Status         : %(state)s
   * Error message  : %(status_msg)s
   * String searched: %(str)s
   * Check time     : %(update_msg)s
 
 """ % result
+  # Generate mail message footer
   mail_template += """Mail alert generated at %s""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
+  # Generate the mail content
   mail_msg = MIMEText(mail_template)
   mail_msg['From'] = FROM_ADDRESS
   mail_msg['Subject'] = "[WebPing] Alert: %s" % ', '.join([s for s in [fail_count and "%s failures" % fail_count or None, warning_count and "%s warnings" % warning_count or None] if s])
   mail_msg['To'] = ', '.join(MAILING_LIST)
   # Temporarily increase socket timeout to contact mail server
   socket.setdefaulttimeout(60)
+  # Connect to server and send the mail alert
   mail_server = smtplib.SMTP(MAIL_SERVER)
   mail_server.sendmail(FROM_ADDRESS, MAILING_LIST, mail_msg.as_string())
   mail_server.close()
