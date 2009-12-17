@@ -1,17 +1,26 @@
-Setup steps
------------
+Install & Setup steps
+---------------------
 
-  1. Create a cron config file:
+This how-to is designed around our current use of WebPing. Don't
+forget to adapt it to you needs and your environment.
+
+  1. Check out the latest version of WebPing from our internal SVN repository:
+       $ sudo su
+       $ cd /var/www
+       $ svn co http://intranet.example.com:3690/project/WebPing/trunk WebPing
+
+  2. Fix rights and ownership (quick and dirty):
+       $ chmod -R 755 /var/www/WebPing
+       $ chown -R www-data:www-data /var/www/WebPing
+
+  3. Create a cron file:
        $ touch /etc/cron.d/web-ping
 
-  2. Add in it the following configuration:
-       */10 * * * * root /usr/local/bin/python2.4 /var/www/WebPing/web-ping.py
+  4. Add in it the following configuration:
+       */10 * * * * www-data /usr/local/bin/python2.4 /var/www/WebPing/web-ping.py
 
-  3. Edit WebPing's apache configuration to adjust parameters if necessary:
-       $ vi /var/www/WebPing/web-ping.conf
-
-  4. Then edit your main apache config:
+  5. Then edit your main apache config:
        $ vi /var/httpd/httpd-2.2/conf/httpd.conf
 
-  5. And add the following directive:
+  6. And add the following directive:
        Include /var/www/WebPing/web-ping.conf
