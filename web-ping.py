@@ -173,6 +173,11 @@ if fail_count > 0 or warning_count > 0:
   # Set back to a more reasonable time out
   socket.setdefaulttimeout(TIMEOUT)
 
+# Place the HTML report beside the current script if the given destination is not absolute
+report_path = DESTINATION_REPORT_FILE
+if not os.path.isabs(report_path):
+  report_path = os.path.abspath(os.path.join(sys.path[0], report_path))
+
 # Produce a nice HTML report ready to be published by Apache
 header = """
 <?xml version="1.0" encoding="utf-8"?>
@@ -184,7 +189,8 @@ header = """
     <style type="text/css">
     <!--
       body {
-        font-family: "Calibri", "Helvetica", "Verdana", "Arial", sans-serif;
+        font-family: arial,sans-serif;
+        font-size: small;
         color: #333;
       }
 
@@ -200,7 +206,7 @@ header = """
         float: left;
         padding: 0 40px;
       }
-      .c1 {border-right: 1px dotted #ccc}
+      .c1, .c2 {border-right: 1px dotted #ccc}
 
       ul.center-aligned {list-style-type: none}
       ul span {font-weight: bold}
@@ -222,12 +228,12 @@ header = """
       table caption, table th, table td {padding: 4px 10px}
       table a .protocol  {color: #999}
       table a .domain    {font-weight: bold}
-      table a .url-trail {font-size: .7em}
       table .empty_string {color: #999; font-style: italic}
-      table .fail      {background-color: #e13737; color: #fff}
-      table .warning   {background-color: #ff7c00; color: #fff}
-      table .ok        {background-color: #0ab006; color: #fff}
-      table .unchecked {background-color: #ccc;    color: #000}
+      table .state     {font-weight: bold; color: #fff}
+      table .fail      {background-color: #e13737}
+      table .warning   {background-color: #ff7c00}
+      table .ok        {background-color: #0ab006}
+      table .unchecked {background-color: #ccc; color: #000}
     -->
     </style>
   </head>
@@ -257,9 +263,20 @@ body = """
                 , 'unchecked': padNumber(unchecked_count)
                 }
 
-body += '\n'.join(["<li>%s</li>" % email for email in MAILING_LIST])
+body += '\n'.join(["""<li><a href="mailto:%s">%s</a></li>""" %  tuple([email] * 2) for email in MAILING_LIST])
 
 body += """
+      </ul>
+    </div>
+
+    <div class="column c3">
+      <p><strong>WebPing configuration</strong>:</p>
+      <ul>
+        <li>Ping interval: likely set by a cron job</li>
+        <li>Ping timeout: %(timeout)s seconds</li>
+        <li>SMTP server: <code>%(mail_server)s</code></li>
+        <li>HTML report path: <code>%(report_path)s</code></li>
+        <li>Script location: <code>%(script_path)s</code></li>
       </ul>
     </div>
 
@@ -272,13 +289,17 @@ body += """
           <th>Last check</th>
         </tr>
       </thead>
-      <tbody>"""
+      <tbody>""" % { 'timeout'    : TIMEOUT
+                   , 'mail_server': MAIL_SERVER
+                   , 'report_path': report_path
+                   , 'script_path': sys.path[0]
+                   }
 
 body += '\n'.join(["""
         <tr>
           <td><a href="%(url)s">%(url_msg)s</a></td>
           <td class="%(str_class)s">%(str_msg)s</td>
-          <td class="%(state)s">%(status_msg)s</td>
+          <td class="state %(state)s">%(status_msg)s</td>
           <td class="time"><abbr title="%(update_time)s">%(update_msg)s</abbr></td>
         </tr>""" % i for i in result_list])
 
@@ -291,12 +312,8 @@ footer = """
   </body>
 </html>""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
 
-# Place the HTML report beside the current script if the given destination is not absolute
-filepath = DESTINATION_REPORT_FILE
-if not os.path.isabs(filepath):
-  filepath = os.path.abspath(os.path.join(sys.path[0], filepath))
 # Write the HTML report on the filesystem
-html_report = open(filepath, 'w')
+html_report = open(report_path, 'w')
 html_report.write(header + body + footer)
 html_report.close()
 
