@@ -35,7 +35,7 @@ import sys
 import StringIO
 import gzip
 import smtplib
-from os.path        import abspath
+import os.path
 from urlparse       import urlparse
 from email.MIMEText import MIMEText
 
@@ -291,7 +291,12 @@ footer = """
   </body>
 </html>""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
 
-html_report = open(abspath(DESTINATION_REPORT_FILE), 'w')
+# Place the HTML report beside the current script if the given destination is not absolute
+filepath = DESTINATION_REPORT_FILE
+if not os.path.isabs(filepath):
+  filepath = os.path.abspath(os.path.join(sys.path[0], filepath))
+# Write the HTML report on the filesystem
+html_report = open(filepath, 'w')
 html_report.write(header + body + footer)
 html_report.close()
 
