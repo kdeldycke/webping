@@ -294,3 +294,5 @@ footer = """
 html_report = open(abspath(DESTINATION_REPORT_FILE), 'w')
 html_report.write(header + body + footer)
 html_report.close()
+
+sys.exit(0)
