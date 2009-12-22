@@ -246,14 +246,14 @@ body = """
     <div class="column c1">
       <p><strong>Summary</strong>:</p>
       <ul class="center-aligned">
-        <li><span>%(total)s</span> sites monitored</li>
+        <li><span>%(total)s</span> URLs monitored</li>
         <li><span class="fail">%(fail)s</span> error</li>
         <li><span class="warning">%(warning)s</span> warning</li>
         <li><span class="ok">%(ok)s</span> ok</li>
         <li><span class="unchecked">%(unchecked)s</span> unchecked</li>
       </ul>
     </div>
-    
+
     <div class="column c2">
       <p><strong>People receiving mail alerts</strong>:</p>
       <ul>""" % { 'total'    : padNumber(total_count)
