@@ -24,6 +24,9 @@ TIMEZONE = None
 #Sockets timeout in seconds
 TIMEOUT = 30
 
+# HTML report auto-refresh time in minutes
+AUTO_REFRESH_DELAY = 3
+
 ############################# END OF USER CONFIG #############################
 
 
@@ -185,6 +188,7 @@ header = """
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Refresh" content="%s"/>
     <title>WebPing dashboard</title>
     <style type="text/css">
     <!--
@@ -238,7 +242,7 @@ header = """
     </style>
   </head>
   <body>
-"""
+""" % (AUTO_REFRESH_DELAY * 60)
 
 body = """
     <h1>WebPing dashboard</h1>
@@ -275,6 +279,7 @@ body += """
         <li>Ping interval: likely set by a cron job</li>
         <li>Ping timeout: %(timeout)s seconds</li>
         <li>SMTP server: <code>%(mail_server)s</code></li>
+        <li>HTML report auto-refresh time: %(auto_refresh)s minutes</li>
         <li>HTML report path: <code>%(report_path)s</code></li>
         <li>Script location: <code>%(script_path)s</code></li>
       </ul>
@@ -289,10 +294,11 @@ body += """
           <th>Last check</th>
         </tr>
       </thead>
-      <tbody>""" % { 'timeout'    : TIMEOUT
-                   , 'mail_server': MAIL_SERVER
-                   , 'report_path': report_path
-                   , 'script_path': sys.path[0]
+      <tbody>""" % { 'timeout'     : TIMEOUT
+                   , 'mail_server' : MAIL_SERVER
+                   , 'report_path' : report_path
+                   , 'script_path' : sys.path[0]
+                   , 'auto_refresh': AUTO_REFRESH_DELAY
                    }
 
 body += '\n'.join(["""
