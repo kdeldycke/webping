@@ -74,18 +74,18 @@ for check in CHECK_LIST:
   # Beautify URL
   result['url_msg'] = """<span class="protocol">%s://</span><span class="domain">%s</span><span class="url-trail">%s%s%s%s</span>""" % urlparse(check['url'])
   # Get time data
-  start_time = datetime.datetime.now(TIMEZONE)
-  result['update_time'] = start_time.isoformat(' ')
-  result['update_msg']  = start_time.strftime(DATETIME_FORMAT)
+  check_time = datetime.datetime.now(TIMEZONE)
+  result['update_time'] = check_time.isoformat(' ')
+  result['update_msg']  = check_time.strftime(DATETIME_FORMAT)
   # Get the page and start the analysis to guess state
   try:
-    fetcher = urllib2.urlopen(check['url'])
-    fetcher.addheaders = [{'User-agent'     : "WebPing"
-                         , 'Referer'        : "http://intranet.example.com:82"
-                         , 'Accept-encoding': 'gzip'
-                         }]
-    page_content = fetcher.read()
-    end_time = datetime.datetime.now(TIMEZONE)
+    req = urllib2.Request(check['url'])
+    req.add_header('User-agent'     , "WebPing")
+    req.add_header('Referer'        , "http://intranet.example.com:82")
+    req.add_header('Accept-encoding', 'gzip')
+    start_time = datetime.datetime.now()
+    fetcher = urllib2.urlopen(req)
+    end_time = datetime.datetime.now()
     response_time = end_time - start_time
     response_time = (response_time.days * 24 * 60 * 60) + response_time.seconds + (response_time.microseconds / 1000000.0)
     result['response_time'] = "%.3f s." % response_time
@@ -93,6 +93,7 @@ for check in CHECK_LIST:
       result['response_time_class'] = "slow"
     else:
       result['response_time_class'] = "acceptable"
+    page_content = fetcher.read()
     # Decode page content
     # Source: http://www.diveintopython.org/http_web_services/gzip_compression.html
     encoding = fetcher.headers.get('content-encoding', None)
@@ -294,6 +295,7 @@ body += """
       <ul>
         <li>Ping interval: likely set by a cron job</li>
         <li>Ping timeout: %(timeout)s seconds</li>
+        <li>Ping response time threshold: %(response_threshold)s seconds</li>
         <li>SMTP server: <code>%(mail_server)s</code></li>
         <li>HTML report auto-refresh time: %(auto_refresh)s minutes</li>
         <li>HTML report path: <code>%(report_path)s</code></li>
@@ -311,11 +313,12 @@ body += """
           <th>Response time</th>
         </tr>
       </thead>
-      <tbody>""" % { 'timeout'     : TIMEOUT
-                   , 'mail_server' : MAIL_SERVER
-                   , 'report_path' : report_path
-                   , 'script_path' : sys.path[0]
-                   , 'auto_refresh': AUTO_REFRESH_DELAY
+      <tbody>""" % { 'timeout'           : TIMEOUT
+                   , 'mail_server'       : MAIL_SERVER
+                   , 'report_path'       : report_path
+                   , 'script_path'       : sys.path[0]
+                   , 'auto_refresh'      : AUTO_REFRESH_DELAY
+                   , 'response_threshold': RESPONSE_TIME_THRESHOLD
                    }
 
 body += '\n'.join(["""
