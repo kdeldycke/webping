@@ -18,11 +18,13 @@ FROM_ADDRESS = "WebPing <webping@example.com>"
 MAILING_LIST = []
 
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-# TODO
-TIMEZONE = None
+TIMEZONE = None  # TODO
 
 #Sockets timeout in seconds
 TIMEOUT = 30
+
+# Response time above which is good to get user's attention
+RESPONSE_TIME_THRESHOLD = 2.0
 
 # HTML report auto-refresh time in minutes
 AUTO_REFRESH_DELAY = 3
@@ -60,8 +62,10 @@ for check in CHECK_LIST:
   result = check.copy()
   result['state'] = 'unchecked'
   result['status_msg'] = "Unchecked"
+  result['response_time'] = "undetermined"
+  result['response_time_class'] = "unknown"
   if not result.has_key('str') or not result['str'].strip():
-    result['str_msg'] = "None"
+    result['str_msg'] = "none"
     result['str'] = None
     result['str_class'] = 'empty_string'
   else:
@@ -70,8 +74,9 @@ for check in CHECK_LIST:
   # Beautify URL
   result['url_msg'] = """<span class="protocol">%s://</span><span class="domain">%s</span><span class="url-trail">%s%s%s%s</span>""" % urlparse(check['url'])
   # Get time data
-  result['update_time'] = datetime.datetime.now(TIMEZONE).isoformat(' ')
-  result['update_msg']  = datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
+  start_time = datetime.datetime.now(TIMEZONE)
+  result['update_time'] = start_time.isoformat(' ')
+  result['update_msg']  = start_time.strftime(DATETIME_FORMAT)
   # Get the page and start the analysis to guess state
   try:
     fetcher = urllib2.urlopen(check['url'])
@@ -80,6 +85,14 @@ for check in CHECK_LIST:
                          , 'Accept-encoding': 'gzip'
                          }]
     page_content = fetcher.read()
+    end_time = datetime.datetime.now(TIMEZONE)
+    response_time = end_time - start_time
+    response_time = (response_time.days * 24 * 60 * 60) + response_time.seconds + (response_time.microseconds / 1000000.0)
+    result['response_time'] = "%.3f s." % response_time
+    if response_time >= RESPONSE_TIME_THRESHOLD:
+      result['response_time_class'] = "slow"
+    else:
+      result['response_time_class'] = "acceptable"
     # Decode page content
     # Source: http://www.diveintopython.org/http_web_services/gzip_compression.html
     encoding = fetcher.headers.get('content-encoding', None)
@@ -238,6 +251,9 @@ header = """
       table .warning   {background-color: #ff7c00}
       table .ok        {background-color: #0ab006}
       table .unchecked {background-color: #ccc; color: #000}
+      table .duration.unknown    {color: #999}
+      table .duration.acceptable {}
+      table .duration.slow       {color: #e13737}
     -->
     </style>
   </head>
@@ -292,6 +308,7 @@ body += """
           <th>String to search</th>
           <th>Status</th>
           <th>Last check</th>
+          <th>Response time</th>
         </tr>
       </thead>
       <tbody>""" % { 'timeout'     : TIMEOUT
@@ -307,6 +324,7 @@ body += '\n'.join(["""
           <td class="%(str_class)s">%(str_msg)s</td>
           <td class="state %(state)s">%(status_msg)s</td>
           <td class="time"><abbr title="%(update_time)s">%(update_msg)s</abbr></td>
+          <td class="duration %(response_time_class)s">%(response_time)s</td>
         </tr>""" % i for i in result_list])
 
 body += """
