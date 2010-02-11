@@ -196,7 +196,7 @@ if not os.path.isabs(report_path):
   report_path = os.path.abspath(os.path.join(sys.path[0], report_path))
 
 # Produce a nice HTML report ready to be published by Apache
-header = '<?xml version="1.0" encoding="utf-8"?>'"""
+header = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
