@@ -1,4 +1,4 @@
-﻿#!/usr/local/bin/python2.4
+#!/usr/local/bin/python2.4
 # -*- coding: utf-8 -*-
 
 ############################ START OF USER CONFIG ############################

@@ -1,5 +1,5 @@
-Install & Setup steps
----------------------
+Install and Setup steps
+-----------------------
 
 This how-to is designed around our current use of WebPing. Don't
 forget to adapt it to you needs and your environment.
@@ -23,4 +23,4 @@ forget to adapt it to you needs and your environment.
        $ vi /var/httpd/httpd-2.2/conf/httpd.conf
 
   6. And add the following directive:
-       Include /var/www/WebPing/web-ping.conf
+       Include /var/www/WebPing/apache.conf
