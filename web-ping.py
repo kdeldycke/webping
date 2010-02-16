@@ -204,7 +204,7 @@ header = """<?xml version="1.0" encoding="utf-8"?>
     <meta http-equiv="Refresh" content="%s"/>
     <title>WebPing dashboard</title>
     <link rel="stylesheet" type="text/css" href="css/style.css"/>
-    <script src="js/jquery-1.3.2.js" type="text/javascript"></script>
+    <script src="js/jquery-1.3.2.min.js" type="text/javascript"></script>
     <script src="js/jquery.cuteTime.min.js" type="text/javascript"></script>
     <script type="text/javascript">
       $(document).ready(function () {
