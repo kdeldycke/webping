@@ -256,6 +256,14 @@ header = """<?xml version="1.0" encoding="utf-8"?>
       table .duration.slow       {color: #e13737}
     -->
     </style>
+    <script src="js/jquery-1.3.2.js" type="text/javascript"></script>
+    <script src="js/jquery.cuteTime.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        // assign cuteTime controller to all 'timetamp' class objects
+        $('.timestamp').cuteTime();
+      });
+    </script>
   </head>
   <body>
 """ % (AUTO_REFRESH_DELAY * 60)
@@ -325,7 +333,7 @@ body += '\n'.join(["""
           <td><a href="%(url)s">%(url_msg)s</a></td>
           <td class="%(str_class)s">%(str_msg)s</td>
           <td class="state %(state)s">%(status_msg)s</td>
-          <td class="time"><abbr title="%(update_time)s">%(update_msg)s</abbr></td>
+          <td class="time"><abbr class="timestamp" title="%(update_time)s">%(update_msg)s</abbr></td>
           <td class="duration %(response_time_class)s">%(response_time)s</td>
         </tr>""" % i for i in result_list])
 
@@ -334,9 +342,9 @@ body += """
     </table>"""
 
 footer = """
-    <p>HTML report generated at %s</p>
+    <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>.</p>
   </body>
-</html>""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
+</html>""" % {'update_time': datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)}
 
 # Write the HTML report on the filesystem
 html_report = open(report_path, 'w')
