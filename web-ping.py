@@ -203,59 +203,7 @@ header = """<?xml version="1.0" encoding="utf-8"?>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Refresh" content="%s"/>
     <title>WebPing dashboard</title>
-    <style type="text/css">
-    <!--
-      body {
-        font-family: arial,sans-serif;
-        font-size: small;
-        color: #333;
-      }
-
-      a {text-decoration: none}
-      a:hover {text-decoration: underline}
-
-      abbr {
-        cursor: help;
-        border-bottom-width: 0;
-      }
-
-      .column {
-        float: left;
-        padding: 0 40px;
-      }
-      .c1, .c2 {border-right: 1px dotted #ccc}
-
-      ul.center-aligned {list-style-type: none}
-      ul span {font-weight: bold}
-      ul .fail      {color: #e13737}
-      ul .warning   {color: #ff7c00}
-      ul .ok        {color: #0ab006}
-      ul .unchecked {color: #ccc}
-
-      table {
-        border-collapse: collapse;
-        border-left: 1px solid #686868;
-        border-right: 1px solid #686868;
-        text-align: left;
-        clear: both;
-        margin: 20px 0 0;
-      }
-      table tr {border: 1px solid #686868}
-      table caption, table th           {font-weight: bold}
-      table caption, table th, table td {padding: 4px 10px}
-      table a .protocol  {color: #999}
-      table a .domain    {font-weight: bold}
-      table .empty_string {color: #999; font-style: italic}
-      table .state     {font-weight: bold; color: #fff}
-      table .fail      {background-color: #e13737}
-      table .warning   {background-color: #ff7c00}
-      table .ok        {background-color: #0ab006}
-      table .unchecked {background-color: #ccc; color: #000}
-      table .duration.unknown    {color: #999}
-      table .duration.acceptable {}
-      table .duration.slow       {color: #e13737}
-    -->
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
     <script src="js/jquery-1.3.2.js" type="text/javascript"></script>
     <script src="js/jquery.cuteTime.min.js" type="text/javascript"></script>
     <script type="text/javascript">
