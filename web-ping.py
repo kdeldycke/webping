@@ -290,7 +290,9 @@ body += """
     </table>"""
 
 footer = """
-    <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>.</p>
+    <div id="footer">
+      <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>.</p>
+    </div>
   </body>
 </html>""" % {'update_time': datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)}
 

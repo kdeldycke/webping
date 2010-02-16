@@ -1,7 +1,16 @@
 body {
+  margin: 0;
   font-family: arial,sans-serif;
   font-size: small;
   color: #333;
+}
+
+h1 {
+  text-align: center;
+  background: #fff url(/img/radial-gradient.png) no-repeat top center;
+  border-bottom: 3px solid #ccc;
+  margin: 0;
+  padding: .8em;
 }
 
 a {text-decoration: none}
@@ -31,7 +40,7 @@ table {
   border-right: 1px solid #686868;
   text-align: left;
   clear: both;
-  margin: 20px 0 0;
+  margin: 20px auto;
 }
 table tr {border: 1px solid #686868}
 table caption, table th           {font-weight: bold}
@@ -47,3 +56,9 @@ table .unchecked {background-color: #ccc; color: #000}
 table .duration.unknown    {color: #999}
 table .duration.acceptable {}
 table .duration.slow       {color: #e13737}
+
+#footer {
+  font-size: 70%;
+  text-align: center;
+  color: #999
+}
