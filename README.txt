@@ -46,6 +46,14 @@ Don't forget to adapt it to you needs and your environment.
        Include /var/www/WebPing/apache.conf
 
 
+Troubleshooting
+---------------
+
+Problem:  Pages seems to be checked regularly but with a constant delay.
+Solution: Check that the ntp server is properly configured and running on the
+          server side.
+
+
 Author
 ------
 
@@ -58,4 +66,20 @@ Contributors
 
 
  * Matthieu Diehr <matthieu.diehr@gmail.com>
+
+
+Embedded external projects
+--------------------------
+
+WebPing uses external softwares, libraries and artworks:
+  
+  jQuery JavaScript Library v1.3.2
+  Copyright (c) 2009 John Resig
+  Dual licensed under the MIT and GPL licenses.
+  Source: http://jquery.com
+
+  jQuery.cuteTime plugin v1.1.1
+  Copyright (c) 2009 Jeremy Horn <jeremydhorn@gmail.com>, http://tpgblog.com	
+	Dual licensed under MIT and GPL.
+  Source: http://tpgblog.com/cutetime
 
