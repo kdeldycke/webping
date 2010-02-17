@@ -152,6 +152,17 @@ warning_count   = len([r for r in result_list if r['state'] == 'warning'  ])
 ok_count        = len([r for r in result_list if r['state'] == 'ok'       ])
 unchecked_count = len([r for r in result_list if r['state'] == 'unchecked'])
 
+# Determine global status icon
+global_status_icon = "down.png"
+if fail_count > 0:
+  global_status_icon = "minimum.png"
+elif warning_count > 0:
+  global_status_icon = "good.png"
+elif unchecked_count == total_count:
+  global_status_icon = "offline.png"
+elif unchecked_count + ok_count == total_count:
+  global_status_icon = "excellent.png"
+
 # Sort mail for beautiful display
 MAILING_LIST.sort()
 # As soon as we're done with data gathering, send alerts by mail if something is wrong
@@ -201,9 +212,9 @@ header = """<?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="Refresh" content="%s"/>
+    <meta http-equiv="Refresh" content="%(refresh_period)s"/>
     <title>WebPing dashboard</title>
-    <link rel="icon" type="image/png" href="img/favicon.png"/>
+    <link rel="icon" type="image/png" href="img/%(global_status_icon)s"/>
     <link rel="stylesheet" type="text/css" href="css/style.css"/>
     <script src="js/jquery-1.3.2.min.js" type="text/javascript"></script>
     <script src="js/jquery.cuteTime.min.js" type="text/javascript"></script>
@@ -215,7 +226,9 @@ header = """<?xml version="1.0" encoding="utf-8"?>
     </script>
   </head>
   <body>
-""" % (AUTO_REFRESH_DELAY * 60)
+""" % { 'refresh_period'    : AUTO_REFRESH_DELAY * 60
+      , 'global_status_icon': global_status_icon
+      }
 
 body = """
     <h1>WebPing dashboard</h1>
