@@ -80,6 +80,11 @@ WebPing uses external softwares, libraries and artworks:
 
   jQuery.cuteTime plugin v1.1.1
   Copyright (c) 2009 Jeremy Horn <jeremydhorn@gmail.com>, http://tpgblog.com	
-	Dual licensed under MIT and GPL.
+  Dual licensed under MIT and GPL.
   Source: http://tpgblog.com/cutetime
+
+  Crystal Project Icons
+  Copyright (c) 2006-2007, Everaldo Coelho <everaldo@everaldo.com>, http://www.everaldo.com
+  Released under the LGPL licence.
+  Source: http://www.kde-look.org/content/show.php/Crystal+Project?content=60475
 

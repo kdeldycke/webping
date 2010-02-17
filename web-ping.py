@@ -203,6 +203,7 @@ header = """<?xml version="1.0" encoding="utf-8"?>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Refresh" content="%s"/>
     <title>WebPing dashboard</title>
+    <link rel="icon" type="image/png" href="img/favicon.png"/>
     <link rel="stylesheet" type="text/css" href="css/style.css"/>
     <script src="js/jquery-1.3.2.min.js" type="text/javascript"></script>
     <script src="js/jquery.cuteTime.min.js" type="text/javascript"></script>
