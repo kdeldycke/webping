@@ -74,7 +74,7 @@ Contributors
 Embedded external projects
 --------------------------
 
-WebPing uses external softwares, libraries and artworks:
+WebPing uses external softwares, scripts, libraries and artworks:
   
   jQuery JavaScript Library v1.3.2
   Copyright (c) 2009 John Resig
@@ -91,3 +91,7 @@ WebPing uses external softwares, libraries and artworks:
   Released under the LGPL licence.
   Source: http://www.kde-look.org/content/show.php/Crystal+Project?content=60475
 
+  Buildout's bootstrap.py
+  Copyright (c) 2006 Zope Corporation and Contributors
+  Distributed under the Zope Public License, version 2.1 (ZPL).
+  Source: http://svn.zope.org/*checkout*/zc.buildout/trunk/bootstrap/bootstrap.py
