@@ -95,3 +95,8 @@ WebPing uses external softwares, scripts, libraries and artworks:
   Copyright (c) 2006 Zope Corporation and Contributors
   Distributed under the Zope Public License, version 2.1 (ZPL).
   Source: http://svn.zope.org/*checkout*/zc.buildout/trunk/bootstrap/bootstrap.py
+
+  MySQL 5.1.44 source code
+  Copyright (c) Sun Microsystems, Inc.
+  Distributed under the GPLv2 licence.
+  Source: http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.44.tar.gz/from/http://mirrors.ircam.fr/pub/mysql/
