@@ -4,6 +4,7 @@
 import sys
 import gzip
 import yaml
+import getopt
 import socket
 import os.path
 import smtplib
@@ -17,13 +18,12 @@ from email.MIMEText import MIMEText
 # Date format we feed to jquery.cuteTime
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
-# Configuration file name
-CONFIG_FILENAME = 'webping.conf'
+# Set default config file location
+DEFAULT_CONF = 'webping.conf'
 
 
-def webping():
-  # Load config file and set defaults
-  config_path = CONFIG_FILENAME
+def webping(config_path):
+  # Load config file
   if not os.path.isabs(config_path):
     config_path = os.path.abspath(os.path.join(sys.path[0], config_path))
   config_file = file(config_path, 'r')
@@ -302,5 +302,19 @@ def webping():
 
 
 if __name__ == '__main__':
-  webping()
+  try:
+    opts, args = getopt.getopt( sys.argv[1:]
+                              , 'c:'
+                              , ["config="]
+                              )
+  except getopt.GetoptError:
+    print "FATAL - Bad command line options"
+    sys.exit(2)
+  
+  conf = DEFAULT_CONF
+  for o, a in opts:
+    if o in ('-c', '--config'):
+      conf = a
+  
+  webping(conf)
   sys.exit(0)
