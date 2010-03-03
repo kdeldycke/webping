@@ -4,7 +4,12 @@ WebPing changelog
 0.2.dev - unreleased / work in progress
 ---------------------------------------
 
-No changes yet.
+ * Move user config to a dedicated YAML config file.
+ * Automate WebPing setup via buildout.
+   [2010-03-03] kdeldycke
+
+ * Add minimal MySQL integration for experimentations.
+   [2010-02-26] kdeldycke
 
 
 0.1 - 2010-02-24
