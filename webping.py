@@ -16,7 +16,7 @@ from email.MIMEText import MIMEText
 # Date format we feed to jquery.cuteTime
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 # Configuration file name
-CONFIG_FILENAME = 'web-ping.conf'
+CONFIG_FILENAME = 'webping.conf'
 
 # Load config file and set defaults
 config_path = CONFIG_FILENAME

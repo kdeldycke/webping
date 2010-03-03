@@ -37,10 +37,10 @@ Don't forget to adapt it to you needs and your environment.
        $ chown -R www-data:www-data /var/www/WebPing
 
   3. Create a cron file:
-       $ touch /etc/cron.d/web-ping
+       $ touch /etc/cron.d/webping
 
   4. Add in it the following configuration:
-       */10 * * * * www-data /usr/local/bin/python2.4 /var/www/WebPing/web-ping.py
+       */10 * * * * www-data /usr/local/bin/python2.4 /var/www/WebPing/webping.py
 
   5. Then edit your main apache config:
        $ vi /var/httpd/httpd-2.2/conf/httpd.conf
@@ -49,7 +49,7 @@ Don't forget to adapt it to you needs and your environment.
        Include /var/www/WebPing/apache.conf
 
   7. Eventually change WebPing config file to match your needs:
-       $ vi /var/www/WebPing/web-ping.conf
+       $ vi /var/www/WebPing/webping.conf
 
 
 Troubleshooting
