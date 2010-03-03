@@ -1,6 +1,10 @@
 #!/usr/local/bin/python2.4
 # -*- coding: utf-8 -*-
 
+# Current WebPing version
+__version__ = '0.2.dev'
+
+
 import sys
 import gzip
 import yaml
@@ -191,6 +195,9 @@ def webping(config_path):
   if not os.path.isabs(report_path):
     report_path = os.path.abspath(os.path.join(sys.path[0], report_path))
 
+  # Compute current script signature
+  signature = "WebPing v%s" % __version__
+ 
   # Produce a nice HTML report ready to be published by Apache
   header = """<?xml version="1.0" encoding="utf-8"?>
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -198,6 +205,7 @@ def webping(config_path):
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
       <meta http-equiv="Refresh" content="%(refresh_period)s"/>
+      <meta name="generator" content="%(generator)s"/>
       <title>WebPing dashboard</title>
       <link rel="icon" type="image/png" href="img/%(global_status_icon)s"/>
       <link rel="stylesheet" type="text/css" href="css/style.css"/>
@@ -212,6 +220,7 @@ def webping(config_path):
     </head>
     <body>
   """ % { 'refresh_period'    : conf['AUTO_REFRESH_DELAY'] * 60
+        , 'generator'         : signature
         , 'global_status_icon': global_status_icon
         }
 
@@ -290,10 +299,12 @@ def webping(config_path):
 
   footer = """
       <div id="footer">
-        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>.</p>
+        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, by <strong>%(generator)s</strong>.</p>
       </div>
     </body>
-  </html>""" % {'update_time': datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)}
+  </html>""" % { 'update_time': datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)
+               , 'generator'  : signature
+               }
 
   # Write the HTML report on the filesystem
   html_report = open(report_path, 'w')
