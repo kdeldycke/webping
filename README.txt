@@ -10,13 +10,13 @@ can't be reached. It also search for a given string in the page and calculate
 page response time.
 
 This is basically a stupid and simple script. It was created at EDF for the
-needs of the internal intranet team but can be used in other contexts.
+very specific needs of the internal intranet team but can be used in other contexts.
 
 
 Requirements
 ------------
 
- * a Python interpreter (tested with Python 2.4.6)
+ * a Python interpreter (tested with Python 2.4.x)
  * a web server (tested with Apache 2.2.x)
  * a cron-like software
 
@@ -47,6 +47,9 @@ Don't forget to adapt it to you needs and your environment.
 
   6. And add the following directive:
        Include /var/www/WebPing/apache.conf
+
+  7. Eventually change WebPing config file to match your needs:
+       $ vi /var/www/WebPing/web-ping.conf
 
 
 Troubleshooting
