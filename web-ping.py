@@ -1,48 +1,29 @@
 #!/usr/local/bin/python2.4
 # -*- coding: utf-8 -*-
 
-############################ START OF USER CONFIG ############################
-
-CHECK_LIST = []
-
-# The filepath of the report we want to produce.
-# Can be an absolute file system path like /var/www/WebPing/index.html
-# or a relative path from this script location.
-DESTINATION_REPORT_FILE = "index.html"
-
-# Configuration of the SMTP mail server
-MAIL_SERVER  = "localhost"
-# Identity under which we're sending mail alerts
-FROM_ADDRESS = "WebPing <webping@example.com>"
-# List of mails to send reports to
-MAILING_LIST = []
-
-DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-TIMEZONE = None  # TODO
-
-#Sockets timeout in seconds
-TIMEOUT = 30
-
-# Response time above which is good to get user's attention
-RESPONSE_TIME_THRESHOLD = 2.0
-
-# HTML report auto-refresh time in minutes
-AUTO_REFRESH_DELAY = 3
-
-############################# END OF USER CONFIG #############################
-
-
-
-import datetime
-import socket
-import urllib2
 import sys
-import StringIO
 import gzip
-import smtplib
+import yaml
+import socket
 import os.path
+import smtplib
+import urllib2
+import datetime
+import StringIO
 from urlparse       import urlparse
 from email.MIMEText import MIMEText
+
+# Date format we feed to jquery.cuteTime
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+# Configuration file name
+CONFIG_FILENAME = 'web-ping.conf'
+
+# Load config file and set defaults
+config_path = CONFIG_FILENAME
+if not os.path.isabs(config_path):
+  config_path = os.path.abspath(os.path.join(sys.path[0], config_path))
+config_file = file(config_path, 'r')
+conf = yaml.load(config_file)
 
 # HTML safe
 getSafeString = lambda s: ('%s' % s).replace('<', '&lt;').replace('>', '&gt;')
@@ -53,11 +34,11 @@ padNumber = lambda value: "%s%d" % ((PAD - len(str(value))) * '&ensp;', value)
 
 result_list = []
 # Last night the urllib2 Missing Manual saved my life: http://www.voidspace.org.uk/python/articles/urllib2.shtml
-socket.setdefaulttimeout(TIMEOUT)
+socket.setdefaulttimeout(conf['TIMEOUT'])
 # Display and process items by URLs
 delProtocol = lambda c: ''.join(list(urlparse(c['url'])[1:]))
-CHECK_LIST.sort(lambda a, b: cmp(delProtocol(a), delProtocol(b)))
-for check in CHECK_LIST:
+conf['CHECK_LIST'].sort(lambda a, b: cmp(delProtocol(a), delProtocol(b)))
+for check in conf['CHECK_LIST']:
   # Init and normalize result items
   result = check.copy()
   result['state'] = 'unchecked'
@@ -74,7 +55,7 @@ for check in CHECK_LIST:
   # Beautify URL
   result['url_msg'] = """<span class="protocol">%s://</span><span class="domain">%s</span><span class="url-trail">%s%s%s%s</span>""" % urlparse(check['url'])
   # Get time data
-  check_time = datetime.datetime.now(TIMEZONE)
+  check_time = datetime.datetime.now(conf['TIMEZONE'])
   result['update_time'] = check_time.isoformat(' ')
   result['update_msg']  = check_time.strftime(DATETIME_FORMAT)
   # Get the page and start the analysis to guess state
@@ -89,7 +70,7 @@ for check in CHECK_LIST:
     response_time = end_time - start_time
     response_time = (response_time.days * 24 * 60 * 60) + response_time.seconds + (response_time.microseconds / 1000000.0)
     result['response_time'] = "%.3f s." % response_time
-    if response_time >= RESPONSE_TIME_THRESHOLD:
+    if response_time >= conf['RESPONSE_TIME_THRESHOLD']:
       result['response_time_class'] = "slow"
     else:
       result['response_time_class'] = "acceptable"
@@ -119,7 +100,7 @@ for check in CHECK_LIST:
     result['state'] = 'fail'
     # Try to print a useful error message
     if isinstance(e.reason, socket.timeout):
-      result['status_msg'] = "Socket timed out after %s seconds" % TIMEOUT
+      result['status_msg'] = "Socket timed out after %s seconds" % conf['TIMEOUT']
     elif isinstance(e.reason, socket.error):
       result['status_msg'] = "Network Error %s: %s" % (e.reason[0], e.reason[1])
     else:
@@ -164,7 +145,7 @@ elif unchecked_count + ok_count == total_count:
   global_status_icon = "excellent.png"
 
 # Sort mail for beautiful display
-MAILING_LIST.sort()
+conf['MAILING_LIST'].sort()
 # As soon as we're done with data gathering, send alerts by mail if something is wrong
 if fail_count > 0 or warning_count > 0:
   # Generate mail message header
@@ -186,23 +167,23 @@ if fail_count > 0 or warning_count > 0:
 
 """ % result
   # Generate mail message footer
-  mail_template += """Mail alert generated at %s""" % datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)
+  mail_template += """Mail alert generated at %s""" % datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)
   # Generate the mail content
   mail_msg = MIMEText(mail_template)
-  mail_msg['From'] = FROM_ADDRESS
+  mail_msg['From'] = conf['FROM_ADDRESS']
   mail_msg['Subject'] = "[WebPing] Alert: %s" % ', '.join([s for s in [fail_count and "%s failures" % fail_count or None, warning_count and "%s warnings" % warning_count or None] if s])
-  mail_msg['To'] = ', '.join(MAILING_LIST)
+  mail_msg['To'] = ', '.join(conf['MAILING_LIST'])
   # Temporarily increase socket timeout to contact mail server
   socket.setdefaulttimeout(60)
   # Connect to server and send the mail alert
-  mail_server = smtplib.SMTP(MAIL_SERVER)
-  mail_server.sendmail(FROM_ADDRESS, MAILING_LIST, mail_msg.as_string())
+  mail_server = smtplib.SMTP(conf['MAIL_SERVER'])
+  mail_server.sendmail(conf['FROM_ADDRESS'], conf['MAILING_LIST'], mail_msg.as_string())
   mail_server.close()
   # Set back to a more reasonable time out
-  socket.setdefaulttimeout(TIMEOUT)
+  socket.setdefaulttimeout(conf['TIMEOUT'])
 
 # Place the HTML report beside the current script if the given destination is not absolute
-report_path = DESTINATION_REPORT_FILE
+report_path = conf['DESTINATION_REPORT_FILE']
 if not os.path.isabs(report_path):
   report_path = os.path.abspath(os.path.join(sys.path[0], report_path))
 
@@ -226,7 +207,7 @@ header = """<?xml version="1.0" encoding="utf-8"?>
     </script>
   </head>
   <body>
-""" % { 'refresh_period'    : AUTO_REFRESH_DELAY * 60
+""" % { 'refresh_period'    : conf['AUTO_REFRESH_DELAY'] * 60
       , 'global_status_icon': global_status_icon
       }
 
@@ -253,7 +234,7 @@ body = """
                 , 'unchecked': padNumber(unchecked_count)
                 }
 
-body += '\n'.join(["""<li><a href="mailto:%s">%s</a></li>""" %  tuple([email] * 2) for email in MAILING_LIST])
+body += '\n'.join(["""<li><a href="mailto:%s">%s</a></li>""" %  tuple([email] * 2) for email in conf['MAILING_LIST']])
 
 body += """
       </ul>
@@ -282,12 +263,12 @@ body += """
           <th>Response time</th>
         </tr>
       </thead>
-      <tbody>""" % { 'timeout'           : TIMEOUT
-                   , 'mail_server'       : MAIL_SERVER
+      <tbody>""" % { 'timeout'           : conf['TIMEOUT']
+                   , 'mail_server'       : conf['MAIL_SERVER']
                    , 'report_path'       : report_path
                    , 'script_path'       : sys.path[0]
-                   , 'auto_refresh'      : AUTO_REFRESH_DELAY
-                   , 'response_threshold': RESPONSE_TIME_THRESHOLD
+                   , 'auto_refresh'      : conf['AUTO_REFRESH_DELAY']
+                   , 'response_threshold': conf['RESPONSE_TIME_THRESHOLD']
                    }
 
 body += '\n'.join(["""
@@ -308,7 +289,7 @@ footer = """
       <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>.</p>
     </div>
   </body>
-</html>""" % {'update_time': datetime.datetime.now(TIMEZONE).strftime(DATETIME_FORMAT)}
+</html>""" % {'update_time': datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)}
 
 # Write the HTML report on the filesystem
 html_report = open(report_path, 'w')
