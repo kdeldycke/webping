@@ -105,4 +105,4 @@ WebPing uses external softwares, scripts, libraries and artworks:
   Buildout's bootstrap.py
   Copyright (c) 2006 Zope Corporation and Contributors
   Distributed under the Zope Public License, version 2.1 (ZPL).
-  Source: http://svn.zope.org/*checkout*/zc.buildout/trunk/bootstrap/bootstrap.py
+  Source: http://svn.zope.org/repos/main/zc.buildout/trunk/bootstrap/bootstrap.py
