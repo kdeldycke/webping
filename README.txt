@@ -20,6 +20,7 @@ Requirements
  * an access to internet, to let buildout download its dependencies via PyPi.
  * a web server (tested with Apache 2.2.x), to serve generated HTML reports.
  * a cron-like software, to "tick" WebPing regularly.
+ * SQLite > 3.x.
 
 
 Install and Setup steps
@@ -28,8 +29,11 @@ Install and Setup steps
 This how-to is designed around our current internal use of WebPing.
 Don't forget to adapt it to you needs and your environment.
 
-  1. Check out the latest version of WebPing from our internal SVN repository:
+  0. Install required packages:
        $ sudo su
+       $ yum install sqlite-devel
+
+  1. Check out the latest version of WebPing from our internal SVN repository:
        $ cd /var/www
        $ svn co http://intranet.example.com:3690/project/WebPing/trunk WebPing
 
@@ -102,8 +106,3 @@ WebPing uses external softwares, scripts, libraries and artworks:
   Copyright (c) 2006 Zope Corporation and Contributors
   Distributed under the Zope Public License, version 2.1 (ZPL).
   Source: http://svn.zope.org/*checkout*/zc.buildout/trunk/bootstrap/bootstrap.py
-
-  MySQL 5.1.44 source code
-  Copyright (c) Sun Microsystems, Inc.
-  Distributed under the GPLv2 licence.
-  Source: http://dev.mysql.com/get/Downloads/MySQL-5.1/mysql-5.1.44.tar.gz/from/http://mirrors.ircam.fr/pub/mysql/

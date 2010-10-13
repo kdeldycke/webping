@@ -4,6 +4,9 @@ WebPing changelog
 0.2.dev - unreleased / work in progress
 ---------------------------------------
 
+ * Replace MySQL backend by SQLite.
+   [2010-10-13] kdeldycke
+
  * Move user config to a dedicated YAML config file.
  * Automate WebPing setup via buildout.
    [2010-03-03] kdeldycke
