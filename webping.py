@@ -152,6 +152,12 @@ def webping(config_path):
     # Compile a list of results
     result_list.append(result)
 
+  # Populate the database with our fresh datas
+  db.executemany("""INSERT INTO %s (url     , string  , status    , check_time      , response_time     )
+                            VALUES (?       , ?       , ?         , ?               , ?                 )""" % TABLE_NAME
+                ,                 [(d['url'], d['str'], d['state'], d['update_time'], d['response_time']) for d in result_list]
+                )
+
   # End of the data collecting phase, commit our changes in the database
   db.commit()
 
