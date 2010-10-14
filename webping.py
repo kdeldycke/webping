@@ -27,9 +27,11 @@ DEFAULT_CONF = 'webping.conf'
 
 
 def webping(config_path):
+  script_folder = os.path.dirname(os.path.abspath(__file__))
+
   # Load config file
   if not os.path.isabs(config_path):
-    config_path = os.path.abspath(os.path.join(sys.path[0], config_path))
+    config_path = os.path.abspath(os.path.join(script_folder, config_path))
   config_file = file(config_path, 'r')
   conf = yaml.load(config_file)
 
@@ -193,7 +195,7 @@ def webping(config_path):
   # Place the HTML report beside the current script if the given destination is not absolute
   report_path = conf['DESTINATION_REPORT_FILE']
   if not os.path.isabs(report_path):
-    report_path = os.path.abspath(os.path.join(sys.path[0], report_path))
+    report_path = os.path.abspath(os.path.join(script_folder, report_path))
 
   # Compute current script signature
   signature = "WebPing v%s" % __version__
@@ -262,7 +264,7 @@ def webping(config_path):
           <li>SMTP server: <code>%(mail_server)s</code></li>
           <li>HTML report auto-refresh time: %(auto_refresh)s minutes</li>
           <li>HTML report path: <code>%(report_path)s</code></li>
-          <li>Script location: <code>%(script_path)s</code></li>
+          <li>Script location: <code>%(script_folder)s</code></li>
         </ul>
       </div>
 
@@ -279,7 +281,7 @@ def webping(config_path):
         <tbody>""" % { 'timeout'           : conf['TIMEOUT']
                      , 'mail_server'       : conf['MAIL_SERVER']
                      , 'report_path'       : report_path
-                     , 'script_path'       : sys.path[0]
+                     , 'script_folder'     : script_folder
                      , 'auto_refresh'      : conf['AUTO_REFRESH_DELAY']
                      , 'response_threshold': conf['RESPONSE_TIME_THRESHOLD']
                      }
