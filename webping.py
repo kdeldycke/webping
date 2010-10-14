@@ -238,7 +238,9 @@ def webping(config_path):
       <title>WebPing dashboard</title>
       <link rel="icon" type="image/png" href="img/%(global_status_icon)s"/>
       <link rel="stylesheet" type="text/css" href="css/style.css"/>
+      <!--[if IE]><script src="js/excanvas.min.js" type="text/javascript"></script><![endif]-->
       <script src="js/jquery-1.3.2.min.js" type="text/javascript"></script>
+      <script src="js/jquery.flot.min.js" type="text/javascript"></script>
       <script src="js/jquery.cuteTime.min.js" type="text/javascript"></script>
       <script type="text/javascript">
         $(document).ready(function () {

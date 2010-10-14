@@ -108,14 +108,24 @@ WebPing uses external softwares, scripts, libraries and artworks:
   Dual licensed under the MIT and GPL licenses.
   Source: http://jquery.com
 
+  jQuery.Flot plugin v0.6
+  Copyright (c) 2007-2009 IOLA and Ole Laursen
+  Released under the MIT license.
+  Source: http://code.google.com/p/flot
+
   jQuery.cuteTime plugin v1.1.1
   Copyright (c) 2009 Jeremy Horn <jeremydhorn@gmail.com>, http://tpgblog.com	
   Dual licensed under MIT and GPL.
   Source: http://tpgblog.com/cutetime
 
+  ExplorerCanvas
+  Copyright (c) 2006 Google Inc.
+  Released under the Apache License 2.0.
+  Source: http://code.google.com/p/explorercanvas
+
   Crystal Project Icons
   Copyright (c) 2006-2007, Everaldo Coelho <everaldo@everaldo.com>, http://www.everaldo.com
-  Released under the LGPL licence.
+  Released under the LGPL license.
   Source: http://www.kde-look.org/content/show.php/Crystal+Project?content=60475
 
   Buildout's bootstrap.py
