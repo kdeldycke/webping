@@ -304,7 +304,8 @@ def webping(config_path):
             <th>String to search</th>
             <th>Status</th>
             <th>Last check</th>
-            <th>Response time</th>
+            <th>Response over time</th>
+            <th>Last response time</th>
           </tr>
         </thead>
         <tbody>""" % { 'timeout'           : conf['TIMEOUT']
@@ -315,12 +316,20 @@ def webping(config_path):
                      , 'response_threshold': conf['RESPONSE_TIME_THRESHOLD']
                      }
 
+  # Compute all response time graph
+  updated_result_list = []
+  for site in result_list:
+    site['response_time_graph'] = "TODO"
+    updated_result_list.append(site)
+  result_list = updated_result_list
+
   body += '\n'.join(["""
           <tr>
             <td><a href="%(url)s">%(url_msg)s</a></td>
             <td class="%(str_class)s">%(str_msg)s</td>
             <td class="state %(state)s">%(status_msg)s</td>
             <td class="time"><abbr class="timestamp" title="%(update_time)s">%(update_msg)s</abbr></td>
+            <td class="graph">%(response_time_graph)s</td>
             <td class="duration %(response_time_class)s">%(response_time_msg)s</td>
           </tr>""" % i for i in result_list])
 
