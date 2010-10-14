@@ -149,6 +149,9 @@ def webping(config_path):
     # Compile a list of results
     result_list.append(result)
 
+  # End of the data collecting phase, commit our changes in the database
+  db.commit()
+
   # Pre-compute some stats
   total_count     = len(result_list)
   fail_count      = len([r for r in result_list if r['state'] == 'fail'     ])
