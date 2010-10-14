@@ -5,8 +5,10 @@
 __version__ = '0.2.dev'
 
 
+import md5
 import sys
 import gzip
+import time
 import yaml
 import getopt
 import socket
@@ -319,7 +321,24 @@ def webping(config_path):
   # Compute all response time graph
   updated_result_list = []
   for site in result_list:
-    site['response_time_graph'] = "TODO"
+    site_url = site['url']
+    site_id = md5.new(site_url).hexdigest()
+    data_series = []
+    for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' ORDER BY check_time" % (TABLE_NAME, site_url)):
+      response_time = data_point[1]
+      if not response_time:
+        continue
+      (dt, ms) = data_point[0].split('.')
+      check_time = datetime.datetime(*(time.strptime(dt, "%Y-%m-%d %H:%M:%S")[0:6])) + datetime.timedelta(microseconds = int(ms))
+      data_series.append([time.mktime(check_time.timetuple()) * -1000, response_time])
+    site['response_time_graph'] = """<div id="%s" style="width:100px;height:50px;"></div>
+    <script id="source">
+      $(function () {
+        var d = %r;
+        $.plot($("#%s"), [d], { xaxis: { mode: "time" } });
+      });
+    </script>
+    """ % (site_id, data_series, site_id)
     updated_result_list.append(site)
   result_list = updated_result_list
 
