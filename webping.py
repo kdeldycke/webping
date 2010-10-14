@@ -16,6 +16,7 @@ import urllib2
 import datetime
 import StringIO
 from urlparse       import urlparse
+from pysqlite2      import dbapi2 as sqlite
 from email.MIMEText import MIMEText
 
 
@@ -24,6 +25,8 @@ DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 # Set default config file location
 DEFAULT_CONF = 'webping.conf'
+# File name of the database
+DB_NAME = "webping.sqlite"
 
 
 def webping(config_path):
@@ -34,6 +37,16 @@ def webping(config_path):
     config_path = os.path.abspath(os.path.join(script_folder, config_path))
   config_file = file(config_path, 'r')
   conf = yaml.load(config_file)
+
+  # Open the database and create one if not available
+  db_path = os.path.abspath(os.path.join(script_folder, DB_NAME))
+  db = sqlite.connect(db_path)
+  db.execute("""CREATE TABLE webping ( url           TEXT
+                                     , string        TEXT
+                                     , status        TEXT
+                                     , check_time    TEXT
+                                     , response_time REAL
+                                     )""")
 
   # HTML safe
   getSafeString = lambda s: ('%s' % s).replace('<', '&lt;').replace('>', '&gt;')
@@ -313,6 +326,9 @@ def webping(config_path):
   html_report.write(header + body + footer)
   html_report.close()
 
+  # Close the database
+  db.close()
+
 
 if __name__ == '__main__':
   try:
@@ -323,11 +339,11 @@ if __name__ == '__main__':
   except getopt.GetoptError:
     print "FATAL - Bad command line options"
     sys.exit(2)
-  
+
   conf = DEFAULT_CONF
   for o, a in opts:
     if o in ('-c', '--config'):
       conf = a
-  
+
   webping(conf)
   sys.exit(0)
