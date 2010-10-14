@@ -27,6 +27,7 @@ DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 DEFAULT_CONF = 'webping.conf'
 # File name of the database
 DB_NAME = "webping.sqlite"
+TABLE_NAME = "webping"
 
 
 def webping(config_path):
@@ -41,12 +42,14 @@ def webping(config_path):
   # Open the database and create one if not available
   db_path = os.path.abspath(os.path.join(script_folder, DB_NAME))
   db = sqlite.connect(db_path)
-  db.execute("""CREATE TABLE webping ( url           TEXT
-                                     , string        TEXT
-                                     , status        TEXT
-                                     , check_time    TEXT
-                                     , response_time REAL
-                                     )""")
+  table_list = [t[0] for t in db.execute("SELECT tbl_name FROM sqlite_master")]
+  if TABLE_NAME not in table_list:
+    db.execute("""CREATE TABLE %s ( url           TEXT
+                                  , string        TEXT
+                                  , status        TEXT
+                                  , check_time    TEXT
+                                  , response_time REAL
+                                  )""" % TABLE_NAME)
 
   # HTML safe
   getSafeString = lambda s: ('%s' % s).replace('<', '&lt;').replace('>', '&gt;')
