@@ -69,7 +69,8 @@ def webping(config_path):
     result = check.copy()
     result['state'] = 'unchecked'
     result['status_msg'] = "Unchecked"
-    result['response_time'] = "undetermined"
+    result['response_time'] = None
+    result['response_time_msg'] = "undetermined"
     result['response_time_class'] = "unknown"
     if not result.has_key('str') or not result['str'].strip():
       result['str_msg'] = "none"
@@ -95,7 +96,8 @@ def webping(config_path):
       end_time = datetime.datetime.now()
       response_time = end_time - start_time
       response_time = (response_time.days * 24 * 60 * 60) + response_time.seconds + (response_time.microseconds / 1000000.0)
-      result['response_time'] = "%.3f s." % response_time
+      result['response_time'] = response_time
+      result['response_time_msg'] = "%.3f s." % response_time
       if response_time >= conf['RESPONSE_TIME_THRESHOLD']:
         result['response_time_class'] = "slow"
       else:
@@ -317,7 +319,7 @@ def webping(config_path):
             <td class="%(str_class)s">%(str_msg)s</td>
             <td class="state %(state)s">%(status_msg)s</td>
             <td class="time"><abbr class="timestamp" title="%(update_time)s">%(update_msg)s</abbr></td>
-            <td class="duration %(response_time_class)s">%(response_time)s</td>
+            <td class="duration %(response_time_class)s">%(response_time_msg)s</td>
           </tr>""" % i for i in result_list])
 
   body += """
