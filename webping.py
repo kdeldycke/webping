@@ -296,6 +296,7 @@ def webping(config_path):
         <ul>
           <li>Ping interval: likely set by a cron job</li>
           <li>Ping timeout: %(timeout)s seconds</li>
+          <li>Graph history: %(graph_history)s days</li>
           <li>Ping response time threshold: %(response_threshold)s seconds</li>
           <li>SMTP server: <code>%(mail_server)s</code></li>
           <li>HTML report auto-refresh time: %(auto_refresh)s minutes</li>
@@ -311,7 +312,7 @@ def webping(config_path):
             <th>String to search</th>
             <th>Status</th>
             <th>Last update</th>
-            <th>Response over time</th>
+            <th>Response time over the last %(graph_history)s days</th>
             <th>Last response time</th>
           </tr>
         </thead>
@@ -320,6 +321,7 @@ def webping(config_path):
                      , 'report_path'       : report_path
                      , 'script_folder'     : script_folder
                      , 'auto_refresh'      : conf['AUTO_REFRESH_DELAY']
+                     , 'graph_history'     : conf['GRAPH_HISTORY']
                      , 'response_threshold': conf['RESPONSE_TIME_THRESHOLD']
                      }
 
@@ -330,7 +332,7 @@ def webping(config_path):
     site_url = site['url']
     site_uid = "%s%07i" % (md5.new(site_url).hexdigest(), random.randint(0, 9999999))
     data_series = []
-    for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' ORDER BY check_time" % (TABLE_NAME, site_url)):
+    for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' AND check_time >= '%s' ORDER BY check_time" % (TABLE_NAME, site_url, datetime.datetime.now() + datetime.timedelta(-conf['GRAPH_HISTORY']))):
       response_time = data_point[1]
       if not response_time:
         if len(data_series) > 0 and data_series[-1] != 'null':
@@ -381,7 +383,7 @@ def webping(config_path):
 
   footer = """
       <div id="footer">
-        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, in %(render_time)s, by <strong><a href="http://intranet.example.com:3690/project/WebPing">%(generator)s</a></strong>.</p>
+        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, in %(render_time)s, by <a href="http://intranet.example.com:3690/project/WebPing">%(generator)s</a>.</p>
       </div>
     </body>
   </html>""" % { 'update_time': datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)
