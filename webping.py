@@ -328,7 +328,8 @@ def webping(config_path):
     for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' ORDER BY check_time" % (TABLE_NAME, site_url)):
       response_time = data_point[1]
       if not response_time:
-        data_series.append("null")
+        if len(data_series) > 0 and data_series[-1] != 'null':
+          data_series.append('null')
       else:
         (dt, ms) = data_point[0].split('.')
         check_time = datetime.datetime(*(time.strptime(dt, "%Y-%m-%d %H:%M:%S")[0:6])) + datetime.timedelta(microseconds = int(ms))
