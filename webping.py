@@ -386,7 +386,7 @@ def webping(config_path):
       </div>
     </body>
   </html>""" % { 'update_time': datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)
-               , 'render_time': "%.3f s." % (webping_time.days * 24 * 60 * 60) + webping_time.seconds + (webping_time.microseconds / 1000000.0)
+               , 'render_time': "%.3f s." % ((webping_time.days * 24 * 60 * 60) + webping_time.seconds + (webping_time.microseconds / 1000000.0))
                , 'generator'  : signature
                }
 
