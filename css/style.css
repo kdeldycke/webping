@@ -56,6 +56,7 @@ table .unchecked {background-color: #ccc; color: #000}
 table .duration.unknown    {color: #999}
 table .duration.acceptable {}
 table .duration.slow       {color: #e13737}
+table .graph {padding: 0}
 
 #footer {
   font-size: 70%;

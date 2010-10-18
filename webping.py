@@ -335,7 +335,7 @@ def webping(config_path):
     <script id="source">
       $(function () {
         var d = %r;
-        $.plot($("#%s"), [d], { xaxis: { mode: "time" } });
+        $.plot($("#%s"), [d], { lines: {show: true, fill: true}, xaxis: {mode: "time", ticks: []},  yaxis: {min: 0} });
       });
     </script>
     """ % (site_id, data_series, site_id)
