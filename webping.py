@@ -34,6 +34,10 @@ TABLE_NAME = "webping"
 
 
 def webping(config_path):
+  # Calculate WebPinf own's computation time
+  webping_start_time = datetime.datetime.now()
+
+  # Where we are now
   script_folder = os.path.dirname(os.path.abspath(__file__))
 
   # Load config file
@@ -359,6 +363,9 @@ def webping(config_path):
     updated_result_list.append(site)
   result_list = updated_result_list
 
+  webping_time = datetime.datetime.now() - webping_start_time
+  webping_time = (webping_time.days * 24 * 60 * 60) + webping_time.seconds + (webping_time.microseconds / 1000000.0)
+
   body += '\n'.join(["""
           <tr>
             <td><a href="%(url)s">%(url_msg)s</a></td>
@@ -375,10 +382,11 @@ def webping(config_path):
 
   footer = """
       <div id="footer">
-        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, by <strong>%(generator)s</strong>.</p>
+        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, in %(render_time)s, by <strong>%(generator)s</strong>.</p>
       </div>
     </body>
   </html>""" % { 'update_time': datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)
+               , 'render_time': "%.3f s." % webping_time
                , 'generator'  : signature
                }
 
