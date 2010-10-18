@@ -100,8 +100,7 @@ def webping(config_path):
       req.add_header('Accept-encoding', 'gzip')
       start_time = datetime.datetime.now()
       fetcher = urllib2.urlopen(req)
-      end_time = datetime.datetime.now()
-      response_time = end_time - start_time
+      response_time = datetime.datetime.now() - start_time
       response_time = (response_time.days * 24 * 60 * 60) + response_time.seconds + (response_time.microseconds / 1000000.0)
       result['response_time'] = response_time
       result['response_time_msg'] = "%.3f s." % response_time
