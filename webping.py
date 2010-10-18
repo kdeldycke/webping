@@ -334,7 +334,7 @@ def webping(config_path):
       else:
         (dt, ms) = data_point[0].split('.')
         check_time = datetime.datetime(*(time.strptime(dt, "%Y-%m-%d %H:%M:%S")[0:6])) + datetime.timedelta(microseconds = int(ms))
-        data_series.append([time.mktime(check_time.timetuple()) * -1000, response_time])
+        data_series.append([time.mktime(check_time.timetuple()) * 1000, response_time])
     render_point = lambda d: d == 'null' and d or '%r' % d
     data_series_str = ", ".join([render_point(d) for d in data_series])
     site['response_time_graph'] = """<div id="%s" style="width:100px;height:50px;"></div>
