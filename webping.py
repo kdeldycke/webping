@@ -381,7 +381,7 @@ def webping(config_path):
 
   footer = """
       <div id="footer">
-        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, in %(render_time)s, by <strong>%(generator)s</strong>.</p>
+        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, in %(render_time)s, by <strong><a href="http://intranet.example.com:3690/project/WebPing">%(generator)s</a></strong>.</p>
       </div>
     </body>
   </html>""" % { 'update_time': datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)
