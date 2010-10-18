@@ -328,19 +328,21 @@ def webping(config_path):
 
   # Compute all response time graph
   updated_result_list = []
+  graph_max_time = datetime.datetime.now()
+  graph_min_time = graph_max_time + datetime.timedelta(-conf['GRAPH_HISTORY'])
   for site in result_list:
     site['response_time_graph'] = "no data"
     site_url = site['url']
     site_uid = "%s%07i" % (md5.new(site_url).hexdigest(), random.randint(0, 9999999))
     data_series = []
-    for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' AND check_time >= '%s' ORDER BY check_time" % (TABLE_NAME, site_url, datetime.datetime.now() + datetime.timedelta(-conf['GRAPH_HISTORY']))):
+    for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' AND check_time >= '%s' ORDER BY check_time" % (TABLE_NAME, site_url, graph_min_time)):
       response_time = data_point[1]
       if not response_time:
         if len(data_series) > 0 and data_series[-1] != 'null':
           data_series.append('null')
       else:
         check_time = getDateTimeFromString(data_point[0])
-        data_series.append([time.mktime(check_time.timetuple()) * 1000, response_time])
+        data_series.append([getJSEpochFromDateTime(check_time), response_time])
     if len(data_series) > 0:
       render_point = lambda d: d == 'null' and d or '%r' % d
       data_series_str = ", ".join([render_point(d) for d in data_series])
@@ -354,13 +356,13 @@ def webping(config_path):
               threshold: {below: %s, color: "rgb(10, 176, 6)"},
               lines: {steps: false , fill: true}
           }], {
-              xaxis: {mode: "time", ticks: []},
+              xaxis: {mode: "time", min: %i, max: %i, ticks: []},
               yaxis: {min: 0, tickDecimals: 2, labelWidth: 20},
               grid: {borderWidth: 0, labelMargin: 2}
           });
         });
       </script>
-      """ % (site_uid, data_series_str, site_uid, conf['RESPONSE_TIME_THRESHOLD'])
+      """ % (site_uid, data_series_str, site_uid, conf['RESPONSE_TIME_THRESHOLD'], getJSEpochFromDateTime(graph_min_time), getJSEpochFromDateTime(graph_max_time))
     updated_result_list.append(site)
   result_list = updated_result_list
 
@@ -421,6 +423,12 @@ def getDateTimeFromString(s):
   """
   (dt, ms) = s.split('.')
   return datetime.datetime(*(time.strptime(dt, "%Y-%m-%d %H:%M:%S")[0:6])) + datetime.timedelta(microseconds = int(ms))
+
+
+def getJSEpochFromDateTime(dt):
+  """ Convert a Python DateTime object to JavaScript's Epoch
+  """
+  return time.mktime(dt.timetuple()) * 1000
 
 
 if __name__ == '__main__':
