@@ -314,6 +314,7 @@ def webping(config_path):
             <th>Last update</th>
             <th>Response time over the last %(graph_history)s days</th>
             <th>Last response time</th>
+            <th>Last issue</th>
           </tr>
         </thead>
         <tbody>""" % { 'timeout'           : conf['TIMEOUT']
@@ -338,8 +339,7 @@ def webping(config_path):
         if len(data_series) > 0 and data_series[-1] != 'null':
           data_series.append('null')
       else:
-        (dt, ms) = data_point[0].split('.')
-        check_time = datetime.datetime(*(time.strptime(dt, "%Y-%m-%d %H:%M:%S")[0:6])) + datetime.timedelta(microseconds = int(ms))
+        check_time = getDateTimeFromString(data_point[0])
         data_series.append([time.mktime(check_time.timetuple()) * 1000, response_time])
     if len(data_series) > 0:
       render_point = lambda d: d == 'null' and d or '%r' % d
@@ -364,6 +364,22 @@ def webping(config_path):
     updated_result_list.append(site)
   result_list = updated_result_list
 
+  # Get the list of last issues
+  updated_result_list = []
+  for site in result_list:
+    site_url = site['url']
+    last_issue_msg = "no recorded incident"
+    last_issue_class = "unknown"
+    for r in db.execute("SELECT check_time FROM %s WHERE url = '%s' AND response_time IS NULL ORDER BY check_time DESC LIMIT 1" % (TABLE_NAME, site_url)):
+      last_issue = getDateTimeFromString(r[0])
+      last_issue_msg = """<abbr class="timestamp" title="%s">%s</abbr>""" % (last_issue.isoformat(' '), last_issue.strftime(DATETIME_FORMAT))
+      last_issue_class = ""
+      break
+    site['last_issue_msg'] = last_issue_msg
+    site['last_issue_class'] = last_issue_class
+    updated_result_list.append(site)
+  result_list = updated_result_list
+
   body += '\n'.join(["""
           <tr>
             <td><a href="%(url)s">%(url_msg)s</a></td>
@@ -372,6 +388,7 @@ def webping(config_path):
             <td class="time"><abbr class="timestamp" title="%(update_time)s">%(update_msg)s</abbr></td>
             <td class="graph %(response_time_class)s">%(response_time_graph)s</td>
             <td class="duration %(response_time_class)s">%(response_time_msg)s</td>
+            <td class="time %(last_issue_class)s">%(last_issue_msg)s</td>
           </tr>""" % i for i in result_list])
 
   body += """
@@ -397,6 +414,13 @@ def webping(config_path):
 
   # Close the database
   db.close()
+
+
+def getDateTimeFromString(s):
+  """ Convert a date time string extracted from the database to a true DateTime Python object
+  """
+  (dt, ms) = s.split('.')
+  return datetime.datetime(*(time.strptime(dt, "%Y-%m-%d %H:%M:%S")[0:6])) + datetime.timedelta(microseconds = int(ms))
 
 
 if __name__ == '__main__':
