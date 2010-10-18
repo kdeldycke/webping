@@ -355,7 +355,7 @@ def webping(config_path):
               lines: {steps: false , fill: true}
           }], {
               xaxis: {mode: "time", ticks: []},
-              yaxis: {ticks: 3, min: 0, tickDecimals: 2, labelWidth: 20},
+              yaxis: {min: 0, tickDecimals: 2, labelWidth: 20},
               grid: {borderWidth: 0, labelMargin: 2}
           });
         });
