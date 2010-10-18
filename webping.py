@@ -12,6 +12,7 @@ import time
 import yaml
 import getopt
 import socket
+import random
 import os.path
 import smtplib
 import urllib2
@@ -324,7 +325,7 @@ def webping(config_path):
   for site in result_list:
     site['response_time_graph'] = "no data"
     site_url = site['url']
-    site_id = md5.new(site_url).hexdigest()
+    site_uid = "%s%07i" % (md5.new(site_url).hexdigest(), random.randint(0, 9999999))
     data_series = []
     for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' ORDER BY check_time" % (TABLE_NAME, site_url)):
       response_time = data_point[1]
@@ -353,7 +354,7 @@ def webping(config_path):
           });
         });
       </script>
-      """ % (site_id, data_series_str, site_id, conf['RESPONSE_TIME_THRESHOLD'])
+      """ % (site_uid, data_series_str, site_uid, conf['RESPONSE_TIME_THRESHOLD'])
     updated_result_list.append(site)
   result_list = updated_result_list
 
