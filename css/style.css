@@ -47,7 +47,6 @@ table caption, table th           {font-weight: bold}
 table caption, table th, table td {padding: 2px 5px}
 table a .protocol  {color: #999}
 table a .domain    {font-weight: bold}
-table .empty_string {color: #999; font-style: italic}
 table .state     {font-weight: bold; color: #fff}
 table .fail      {background-color: #e13737}
 table .warning   {background-color: #ff7c00}

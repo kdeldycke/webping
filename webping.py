@@ -82,7 +82,7 @@ def webping(config_path):
     if not result.has_key('str') or not result['str'].strip():
       result['str_msg'] = "none"
       result['str'] = None
-      result['str_class'] = 'empty_string'
+      result['str_class'] = 'unknown'
     else:
       result['str_msg'] = "&#171;&nbsp;%s&nbsp;&#187;" % result['str']
       result['str_class'] = None
