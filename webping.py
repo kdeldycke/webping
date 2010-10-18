@@ -243,6 +243,7 @@ def webping(config_path):
       <!--[if IE]><script src="js/excanvas.min.js" type="text/javascript"></script><![endif]-->
       <script src="js/jquery-1.3.2.min.js" type="text/javascript"></script>
       <script src="js/jquery.flot.min.js" type="text/javascript"></script>
+      <script src="js/jquery.flot.threshold.min.js" type="text/javascript"></script>
       <script src="js/jquery.cuteTime.min.js" type="text/javascript"></script>
       <script type="text/javascript">
         $(document).ready(function () {
@@ -335,10 +336,18 @@ def webping(config_path):
     <script id="source">
       $(function () {
         var d = %r;
-        $.plot($("#%s"), [d], { lines: {show: true, fill: true}, xaxis: {mode: "time", ticks: []},  yaxis: {min: 0} });
+        $.plot($("#%s"), [{
+            data: d,
+            color: "rgb(225, 55, 55)",
+            threshold: {below: %s, color: "rgb(10, 176, 6)"},
+            lines: {steps: false , fill: true}
+        }], {
+            xaxis: {mode: "time", ticks: []},
+            yaxis: {min: 0}
+        });
       });
     </script>
-    """ % (site_id, data_series, site_id)
+    """ % (site_id, data_series, site_id, conf['RESPONSE_TIME_THRESHOLD'])
     updated_result_list.append(site)
   result_list = updated_result_list
 
