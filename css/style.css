@@ -53,7 +53,7 @@ table .fail      {background-color: #e13737}
 table .warning   {background-color: #ff7c00}
 table .ok        {background-color: #0ab006}
 table .unchecked {background-color: #ccc; color: #000}
-table .duration.unknown    {color: #999}
+table .unknown {color: #999}
 table .duration.acceptable {}
 table .duration.slow       {color: #e13737}
 table .graph {padding: 0}

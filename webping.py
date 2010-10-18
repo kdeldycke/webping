@@ -322,37 +322,38 @@ def webping(config_path):
   # Compute all response time graph
   updated_result_list = []
   for site in result_list:
+    site['response_time_graph'] = "no data"
     site_url = site['url']
     site_id = md5.new(site_url).hexdigest()
     data_series = []
     for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' ORDER BY check_time" % (TABLE_NAME, site_url)):
       response_time = data_point[1]
       if not response_time:
-        if len(data_series) > 0 and data_series[-1] == 'null':
-          continue
-        data_series.append('null')
+        if len(data_series) > 0 and data_series[-1] != 'null':
+          data_series.append('null')
       else:
         (dt, ms) = data_point[0].split('.')
         check_time = datetime.datetime(*(time.strptime(dt, "%Y-%m-%d %H:%M:%S")[0:6])) + datetime.timedelta(microseconds = int(ms))
         data_series.append([time.mktime(check_time.timetuple()) * 1000, response_time])
-    render_point = lambda d: d == 'null' and d or '%r' % d
-    data_series_str = ", ".join([render_point(d) for d in data_series])
-    site['response_time_graph'] = """<div id="%s" style="width:100px;height:50px;"></div>
-    <script id="source">
-      $(function () {
-        var d = [%s];
-        $.plot($("#%s"), [{
-            data: d,
-            color: "rgb(225, 55, 55)",
-            threshold: {below: %s, color: "rgb(10, 176, 6)"},
-            lines: {steps: false , fill: true}
-        }], {
-            xaxis: {mode: "time", ticks: []},
-            yaxis: {min: 0}
+    if len(data_series) > 0:
+      render_point = lambda d: d == 'null' and d or '%r' % d
+      data_series_str = ", ".join([render_point(d) for d in data_series])
+      site['response_time_graph'] = """<div id="%s" style="width:100px;height:50px;"></div>
+      <script id="source">
+        $(function () {
+          var d = [%s];
+          $.plot($("#%s"), [{
+              data: d,
+              color: "rgb(225, 55, 55)",
+              threshold: {below: %s, color: "rgb(10, 176, 6)"},
+              lines: {steps: false , fill: true}
+          }], {
+              xaxis: {mode: "time", ticks: []},
+              yaxis: {min: 0}
+          });
         });
-      });
-    </script>
-    """ % (site_id, data_series_str, site_id, conf['RESPONSE_TIME_THRESHOLD'])
+      </script>
+      """ % (site_id, data_series_str, site_id, conf['RESPONSE_TIME_THRESHOLD'])
     updated_result_list.append(site)
   result_list = updated_result_list
 
@@ -362,7 +363,7 @@ def webping(config_path):
             <td class="%(str_class)s">%(str_msg)s</td>
             <td class="state %(state)s">%(status_msg)s</td>
             <td class="time"><abbr class="timestamp" title="%(update_time)s">%(update_msg)s</abbr></td>
-            <td class="graph">%(response_time_graph)s</td>
+            <td class="graph %(response_time_class)s">%(response_time_graph)s</td>
             <td class="duration %(response_time_class)s">%(response_time_msg)s</td>
           </tr>""" % i for i in result_list])
 
