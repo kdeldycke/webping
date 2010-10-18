@@ -328,10 +328,11 @@ def webping(config_path):
     for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' ORDER BY check_time" % (TABLE_NAME, site_url)):
       response_time = data_point[1]
       if not response_time:
-        continue
-      (dt, ms) = data_point[0].split('.')
-      check_time = datetime.datetime(*(time.strptime(dt, "%Y-%m-%d %H:%M:%S")[0:6])) + datetime.timedelta(microseconds = int(ms))
-      data_series.append([time.mktime(check_time.timetuple()) * -1000, response_time])
+        data_series.append("null")
+      else:
+        (dt, ms) = data_point[0].split('.')
+        check_time = datetime.datetime(*(time.strptime(dt, "%Y-%m-%d %H:%M:%S")[0:6])) + datetime.timedelta(microseconds = int(ms))
+        data_series.append([time.mktime(check_time.timetuple()) * -1000, response_time])
     site['response_time_graph'] = """<div id="%s" style="width:100px;height:50px;"></div>
     <script id="source">
       $(function () {
