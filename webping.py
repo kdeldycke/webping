@@ -307,7 +307,7 @@ def webping(config_path):
             <th>URL to check</th>
             <th>String to search</th>
             <th>Status</th>
-            <th>Last check</th>
+            <th>Last update</th>
             <th>Response over time</th>
             <th>Last response time</th>
           </tr>
@@ -350,7 +350,8 @@ def webping(config_path):
               lines: {steps: false , fill: true}
           }], {
               xaxis: {mode: "time", ticks: []},
-              yaxis: {min: 0}
+              yaxis: {ticks: 3, min: 0, tickDecimals: 2, labelWidth: 20},
+              grid: {borderWidth: 0, labelMargin: 2}
           });
         });
       </script>

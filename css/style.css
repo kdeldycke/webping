@@ -44,7 +44,7 @@ table {
 }
 table tr {border: 1px solid #686868}
 table caption, table th           {font-weight: bold}
-table caption, table th, table td {padding: 4px 10px}
+table caption, table th, table td {padding: 2px 5px}
 table a .protocol  {color: #999}
 table a .domain    {font-weight: bold}
 table .empty_string {color: #999; font-style: italic}
@@ -59,7 +59,6 @@ table .duration.slow       {color: #e13737}
 table .graph {padding: 0}
 
 #footer {
-  font-size: 70%;
   text-align: center;
   color: #999
 }
