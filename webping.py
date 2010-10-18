@@ -335,14 +335,15 @@ def webping(config_path):
     site_url = site['url']
     site_uid = "%s%07i" % (md5.new(site_url).hexdigest(), random.randint(0, 9999999))
     data_series = []
-    for data_point in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' AND check_time >= '%s' ORDER BY check_time" % (TABLE_NAME, site_url, graph_min_time)):
-      response_time = data_point[1]
+    for (check_time, response_time) in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' ORDER BY check_time DESC" % (TABLE_NAME, site_url)):
       if not response_time:
         if len(data_series) > 0 and data_series[-1] != 'null':
           data_series.append('null')
       else:
-        check_time = getDateTimeFromString(data_point[0])
-        data_series.append([getJSEpochFromDateTime(check_time), response_time])
+        data_series.append([getJSEpochFromDateTime(getDateTimeFromString(check_time)), response_time])
+        if getDateTimeFromString(check_time) < graph_min_time:
+          break
+    data_series = data_series[::-1]
     if len(data_series) > 0:
       render_point = lambda d: d == 'null' and d or '%r' % d
       data_series_str = ", ".join([render_point(d) for d in data_series])
