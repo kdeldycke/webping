@@ -53,7 +53,7 @@ def webping(config_path):
   if TABLE_NAME not in table_list:
     db.execute("""CREATE TABLE %s ( url           TEXT
                                   , string        TEXT
-                                  , status        TEXT
+                                  , status_msg    TEXT
                                   , check_time    TEXT
                                   , response_time REAL
                                   )""" % TABLE_NAME)
@@ -161,9 +161,9 @@ def webping(config_path):
     result_list.append(result)
 
   # Populate the database with our fresh datas
-  db.executemany("""INSERT INTO %s (url     , string  , status    , check_time      , response_time     )
-                            VALUES (?       , ?       , ?         , ?               , ?                 )""" % TABLE_NAME
-                ,                 [(d['url'], d['str'], d['state'], d['update_time'], d['response_time']) for d in result_list]
+  db.executemany("""INSERT INTO %s (url     , string  , status_msg     , check_time      , response_time     )
+                            VALUES (?       , ?       , ?              , ?               , ?                 )""" % TABLE_NAME
+                ,                 [(d['url'], d['str'], d['status_msg'], d['update_time'], d['response_time']) for d in result_list]
                 )
 
   # End of the data collecting phase, commit our changes in the database
@@ -373,9 +373,9 @@ def webping(config_path):
     site_url = site['url']
     last_issue_msg = "no recorded incident"
     last_issue_class = "unknown"
-    for r in db.execute("SELECT check_time FROM %s WHERE url = '%s' AND response_time IS NULL ORDER BY check_time DESC LIMIT 1" % (TABLE_NAME, site_url)):
+    for r in db.execute("SELECT check_time, status_msg FROM %s WHERE url = '%s' AND response_time IS NULL ORDER BY check_time DESC LIMIT 1" % (TABLE_NAME, site_url)):
       last_issue = getDateTimeFromString(r[0])
-      last_issue_msg = """<abbr class="timestamp" title="%s">%s</abbr>""" % (last_issue.isoformat(' '), last_issue.strftime(DATETIME_FORMAT))
+      last_issue_msg = """<abbr class="timestamp" title="%s">%s</abbr> (%s)""" % (last_issue.isoformat(' '), last_issue.strftime(DATETIME_FORMAT), r[1])
       last_issue_class = ""
       break
     site['last_issue_msg'] = last_issue_msg
