@@ -53,6 +53,7 @@ def webping(config_path):
   if TABLE_NAME not in table_list:
     db.execute("""CREATE TABLE %s ( url           TEXT
                                   , string        TEXT
+                                  , status        TEXT
                                   , status_msg    TEXT
                                   , check_time    TEXT
                                   , response_time REAL
@@ -161,9 +162,9 @@ def webping(config_path):
     result_list.append(result)
 
   # Populate the database with our fresh datas
-  db.executemany("""INSERT INTO %s (url     , string  , status_msg     , check_time      , response_time     )
-                            VALUES (?       , ?       , ?              , ?               , ?                 )""" % TABLE_NAME
-                ,                 [(d['url'], d['str'], d['status_msg'], d['update_time'], d['response_time']) for d in result_list]
+  db.executemany("""INSERT INTO %s (url     , string  , status    , status_msg     , check_time      , response_time     )
+                            VALUES (?       , ?       , ?         , ?              , ?               , ?                 )""" % TABLE_NAME
+                ,                 [(d['url'], d['str'], d['state'], d['status_msg'], d['update_time'], d['response_time']) for d in result_list]
                 )
 
   # End of the data collecting phase, commit our changes in the database
