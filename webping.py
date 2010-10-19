@@ -5,6 +5,7 @@
 __version__ = '0.2.dev'
 
 
+import csv
 import md5
 import sys
 import gzip
@@ -58,6 +59,9 @@ def webping(config_path):
                                   , check_time    TEXT
                                   , response_time REAL
                                   )""" % TABLE_NAME)
+
+  # Transform any string to a safe ID
+  getSafeId = lambda s: ''.join([s[i].isalnum() and s[i] or ((i > 0 and i < len(s)-1 and s[i-1].isalnum()) and '-' or '') for i in range(len(s))]).lower()
 
   # HTML safe
   getSafeString = lambda s: ('%s' % s).replace('<', '&lt;').replace('>', '&gt;')
@@ -169,6 +173,35 @@ def webping(config_path):
 
   # End of the data collecting phase, commit our changes in the database
   db.commit()
+
+  # Dump raw data in CSV files  
+  export_folder = os.path.abspath(os.path.join(script_folder, conf['EXPORT_FOLDER']))
+  if not os.path.exists(export_folder):
+    os.makedirs(export_folder)
+
+  updated_result_list = []
+  for site in result_list:
+    site_url = site['url']
+    site_id = getSafeId(site_url)
+    site['csv_path'] = '/'.join([conf['EXPORT_FOLDER'], "%s.csv" % site_id])
+    csv_file_path = os.path.join(export_folder, "%s.csv" % site_id)
+    # If the file already exist, just append our latest datas. Else, generate a big database dump.
+    if os.path.exists(csv_file_path):
+      csv_file = open(csv_file_path, 'a')
+      writer = csv.writer(csv_file)
+      writer.writerow([site_url, site['str'], site['state'], site['status_msg'], site['update_time'], site['response_time']])
+      csv_file.close()
+    else:
+      csv_data = [["url", "string", "status", "status_msg", "check_time", "response_time"]]
+      column_names = ','.join(csv_data[0])
+      for r in db.execute("SELECT %s FROM %s WHERE url = '%s' ORDER BY check_time ASC" % (column_names, TABLE_NAME, site_url)):
+        csv_data.append(r)
+      csv_file = open(csv_file_path, 'w')
+      writer = csv.writer(csv_file)
+      writer.writerows(csv_data)
+      csv_file.close()
+    updated_result_list.append(site)
+  result_list = updated_result_list
 
   # Pre-compute some stats
   total_count     = len(result_list)
@@ -303,6 +336,7 @@ def webping(config_path):
           <li>HTML report auto-refresh time: %(auto_refresh)s minutes</li>
           <li>HTML report path: <code>%(report_path)s</code></li>
           <li>Script location: <code>%(script_folder)s</code></li>
+          <li>Export folder: <code>%(export_folder)s</code></li>
         </ul>
       </div>
 
@@ -316,6 +350,7 @@ def webping(config_path):
             <th>Response time over the last %(graph_history)s days</th>
             <th>Last response time</th>
             <th>Last issue</th>
+            <th>Raw data</th>
           </tr>
         </thead>
         <tbody>""" % { 'timeout'           : conf['TIMEOUT']
@@ -325,6 +360,7 @@ def webping(config_path):
                      , 'auto_refresh'      : conf['AUTO_REFRESH_DELAY']
                      , 'graph_history'     : conf['GRAPH_HISTORY']
                      , 'response_threshold': conf['RESPONSE_TIME_THRESHOLD']
+                     , 'export_folder'     : export_folder
                      }
 
   # Compute all response time graph
@@ -393,6 +429,7 @@ def webping(config_path):
             <td class="graph %(response_time_class)s">%(response_time_graph)s</td>
             <td class="duration %(response_time_class)s">%(response_time_msg)s</td>
             <td class="time %(last_issue_class)s">%(last_issue_msg)s</td>
+            <td class="download"><a href="%(csv_path)s" title="Download CSV export of raw data"><img src="img/csv.png"/></a></td>
           </tr>""" % i for i in result_list])
 
   body += """
