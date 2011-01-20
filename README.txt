@@ -31,21 +31,23 @@ Don't forget to adapt it to you needs and your environment.
 
   0. Install required packages:
        $ sudo su
-       $ yum install sqlite-devel
+       $ yum install subversion gcc sqlite-devel python-devel
 
   1. Check out the latest version of WebPing from our internal SVN repository:
        $ cd /var/www
        $ svn co http://intranet.example.com:3690/project/WebPing/trunk WebPing
 
   2. Fix rights and ownership (quick and dirty):
-       $ chmod -R 755 /var/www/WebPing
-       $ chown -R www-data:www-data /var/www/WebPing
+       $ chmod -R 755           ./WebPing
+       $ chown -R www-data:www-data ./WebPing
 
   3. Initialize the buildout environment:
-       $ python2.4 /var/www/WebPing/bootstrap.py --distribute
+       $ su - www-data
+       $ cd /var/www/WebPing
+       $ python ./bootstrap.py --distribute
 
   4. Run buildout itself:
-       $ /var/www/WebPing/bin/buildout
+       $ ./bin/buildout
 
   5. Setup the cron file:
        $ echo "*/10 * * * * www-data /var/www/WebPing/bin/webping" > /etc/cron.d/webping
@@ -62,6 +64,11 @@ Don't forget to adapt it to you needs and your environment.
 
 Troubleshooting
 ---------------
+
+Problem:  Step 3  of the install process above is stuck when running the
+          bootstrap script, and/or return a connection timeout error.
+Solution: This may be due to your machine/user not having access to internet.
+          Please carefully check your network/proxy configuration.
 
 Problem:  Pages seems to be checked regularly but with a constant delay.
 Solution: Check that the ntp server is properly configured and running on the
