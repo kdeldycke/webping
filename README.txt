@@ -83,9 +83,9 @@ Author
 Contributors
 ------------
  
-
-
+These people contributed code:
  * Matthieu Diehr <matthieu.diehr@gmail.com>
+
 
 
 License
