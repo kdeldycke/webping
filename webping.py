@@ -440,12 +440,13 @@ def webping(config_path):
 
   footer = """
       <div id="footer">
-        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, in %(render_time)s, by <a href="http://intranet.example.com:3690/project/WebPing">%(generator)s</a>.</p>
+        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, in %(render_time)s, by <a href="http://intranet.example.com:3690/project/WebPing/%(repository_tag)s">%(generator)s</a>.</p>
       </div>
     </body>
-  </html>""" % { 'update_time': datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)
-               , 'render_time': "%.3f s." % ((webping_time.days * 24 * 60 * 60) + webping_time.seconds + (webping_time.microseconds / 1000000.0))
-               , 'generator'  : signature
+  </html>""" % { 'update_time'   : datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)
+               , 'render_time'   : "%.3f s." % ((webping_time.days * 24 * 60 * 60) + webping_time.seconds + (webping_time.microseconds / 1000000.0))
+               , 'repository_tag': __version__.endswith('dev') and 'trunk' or 'tags/' + __version__
+               , 'generator'     : signature
                }
 
   # Write the HTML report on the filesystem
