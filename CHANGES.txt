@@ -4,7 +4,19 @@ WebPing changelog
 0.2.dev - unreleased / work in progress
 ---------------------------------------
 
+ * Let anyone download the full history of raw data as a CSV file.
+   [2010-10-19] kdeldycke
+
+ * Add threshold on graphs.
+ * Calculate and display WebPing report computation time.
+ * Show uptime, which is the time since the last incident.
+   [2010-10-18] kdeldycke
+
+ * Render response time as a grapth thanks to Flot jQuery plugin.
+   [2010-10-14] kdeldycke
+
  * Replace MySQL backend by SQLite.
+ * Checkout latest bootstrap dynamically.
    [2010-10-13] kdeldycke
 
  * Move user config to a dedicated YAML config file.
