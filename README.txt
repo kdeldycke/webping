@@ -50,15 +50,14 @@ Don't forget to adapt it to you needs and your environment.
        $ ./bin/buildout
 
   5. Setup the cron file:
-       $ echo "*/10 * * * * www-data /var/www/WebPing/bin/webping" > /etc/cron.d/webping
+       $ sudo echo "*/10 * * * * www-data /var/www/WebPing/bin/webping" > /etc/cron.d/webping
 
-  6. Then edit your main apache config:
-       $ vi /var/httpd/httpd-2.2/conf/httpd.conf
+  6. Register WebPing's specific web configuration to your Apache server:
+       $ ln -s /var/www/WebPing/apache.conf /etc/apache/conf.d/
+       $ /etc/init.d/apache stop
+       $ /etc/init.d/apache start
 
-  7. And add the following directive:
-       Include /var/www/WebPing/apache.conf
-
-  8. Eventually change WebPing config file to match your needs:
+  7. Eventually change WebPing config file to match your needs:
        $ vi /var/www/WebPing/webping.conf
 
 
