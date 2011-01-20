@@ -1,8 +1,8 @@
 WebPing changelog
 =================
 
-0.2.dev - unreleased / work in progress
----------------------------------------
+0.2 - 2011-01-20
+----------------
 
  * Let anyone download the full history of raw data as a CSV file.
    [2010-10-19] kdeldycke
