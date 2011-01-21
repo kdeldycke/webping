@@ -6,7 +6,6 @@ __version__ = '0.3.dev'
 
 
 import csv
-import md5
 import sys
 import gzip
 import time
@@ -370,7 +369,7 @@ def webping(config_path):
   for site in result_list:
     site['response_time_graph'] = "no data"
     site_url = site['url']
-    site_uid = "%s%07i" % (md5.new(site_url).hexdigest(), random.randint(0, 9999999))
+    site_uid = getUID()
     data_series = []
     for (check_time, response_time) in db.execute("SELECT check_time, response_time FROM %s WHERE url = '%s' ORDER BY check_time DESC" % (TABLE_NAME, site_url)):
       if not response_time:
@@ -469,6 +468,21 @@ def getJSEpochFromDateTime(dt):
   """ Convert a Python DateTime object to JavaScript's Epoch
   """
   return time.mktime(dt.timetuple()) * 1000
+
+
+def getUID():
+  """ Get a UID composed of 32 lower-case ASCII characters only.
+  """
+  UID_LENGHT = 32
+  global already_generated
+  already_generated = []
+  new_uid = None
+  while True:
+    new_uid = ''.join([chr(random.randint(97, 122)) for i in range(UID_LENGHT)])
+    if new_uid not in already_generated:
+      already_generated.append(new_uid)
+      break
+  return new_uid
 
 
 if __name__ == '__main__':
