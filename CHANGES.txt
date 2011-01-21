@@ -4,6 +4,9 @@ WebPing changelog
 0.3.dev - unreleased / work in progress 
 ---------------------------------------
 
+ * Fix several non-standard HTML directives.
+   [2011-01-21] kdeldycke
+
  * Automatically set WebPing link at the bottom of the report to the right
    repository tag.
    [2011-01-20] kdeldycke
