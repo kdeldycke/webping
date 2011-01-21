@@ -385,7 +385,7 @@ def webping(config_path):
       render_point = lambda d: d == 'null' and d or '%r' % d
       data_series_str = ", ".join([render_point(d) for d in data_series])
       site['response_time_graph'] = """<div id="%s" style="width:100px;height:50px;"></div>
-      <script id="source">
+      <script type="text/javascript">
         $(function () {
           var d = [%s];
           $.plot($("#%s"), [{
