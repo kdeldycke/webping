@@ -35,7 +35,7 @@ Don't forget to adapt it to you needs and your environment.
 
   1. Check out the latest version of WebPing from our internal SVN repository:
        $ cd /var/www
-       $ svn co http://intranet.example.com:3690/project/WebPing/trunk WebPing
+       $ svn co svn://intranet.example.com:3690/project/WebPing/trunk WebPing
 
   2. Fix rights and ownership (quick and dirty):
        $ chmod -R 755           ./WebPing
