@@ -33,16 +33,16 @@ Don't forget to adapt it to you needs and your environment.
 
     * On RHEL 5.x:
 
-            $ sudo yum install subversion gcc sqlite-devel python-devel
+            $ sudo yum install git gcc sqlite-devel python-devel
 
     * On Ubuntu 11.04:
 
-            $ sudo apt-get install subversion gcc libsqlite-dev python-dev 
+            $ sudo apt-get install git gcc libsqlite-dev python-dev 
 
-1. Check out the latest version of WebPing from our internal SVN repository:
+1. Check out the latest version of WebPing from GitHub:
 
         $ cd /var/www
-        $ svn co svn://intranet.example.com:3690/project/WebPing/trunk WebPing
+        $ git clone git://github.com/kdeldycke/webping.git WebPing
 
 1. Fix rights and ownership (quick and dirty):
 
