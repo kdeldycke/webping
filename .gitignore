@@ -8,6 +8,10 @@ eggs/
 parts/
 .installed.cfg
 
+# Generated files
+export/*
+*.sqlite
+
 # VIM
 *.swp
 
