@@ -1,6 +1,13 @@
 WebPing changelog
 =================
 
+
+0.4.dev - unreleased / work in progress
+---------------------------------------
+
+ * No changes yet.
+
+
 0.3 - 2011-08-08
 ----------------
 
@@ -54,3 +61,4 @@ WebPing changelog
 
  * First commit in our internal SVN.
    [2009-10-05] kdeldycke
+
