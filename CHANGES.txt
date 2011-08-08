@@ -5,7 +5,8 @@ WebPing changelog
 0.4.dev - unreleased / work in progress
 ---------------------------------------
 
- * No changes yet.
+ * Update direct link to WebPing source code.
+   [2011-08-08] kdeldycke
 
 
 0.3 - 2011-08-08
