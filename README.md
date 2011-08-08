@@ -29,49 +29,69 @@ Install and Setup steps
 This how-to is designed around our current internal use of WebPing.
 Don't forget to adapt it to you needs and your environment.
 
-  0. Install required packages:
-       $ sudo su
-       $ yum install subversion gcc sqlite-devel python-devel
+1. Install required packages:
 
-  1. Check out the latest version of WebPing from our internal SVN repository:
-       $ cd /var/www
-       $ svn co svn://intranet.example.com:3690/project/WebPing/trunk WebPing
+        $ sudo su
+        $ yum install subversion gcc sqlite-devel python-devel
 
-  2. Fix rights and ownership (quick and dirty):
-       $ chmod -R 755           ./WebPing
-       $ chown -R www-data:www-data ./WebPing
+1. Check out the latest version of WebPing from our internal SVN repository:
 
-  3. Initialize the buildout environment:
-       $ su - www-data
-       $ cd /var/www/WebPing
-       $ python ./bootstrap.py --distribute
+        $ cd /var/www
+        $ svn co svn://intranet.example.com:3690/project/WebPing/trunk WebPing
 
-  4. Run buildout itself:
-       $ ./bin/buildout
+1. Fix rights and ownership (quick and dirty):
 
-  5. Setup the cron file:
-       $ sudo echo "*/10 * * * * www-data /var/www/WebPing/bin/webping" > /etc/cron.d/webping
+        $ chmod -R 755 ./WebPing
+        $ chown -R www-data:www-data ./WebPing
 
-  6. Register WebPing's specific web configuration to your Apache server:
-       $ ln -s /var/www/WebPing/apache.conf /etc/apache/conf.d/
-       $ /etc/init.d/apache stop
-       $ /etc/init.d/apache start
+1. Initialize the buildout environment:
 
-  7. Eventually change WebPing config file to match your needs:
-       $ vi /var/www/WebPing/webping.conf
+        $ su - www-data
+        $ cd /var/www/WebPing
+        $ python ./bootstrap.py --distribute
+
+1. Run buildout itself:
+
+        $ ./bin/buildout
+
+1. Setup the cron file:
+
+        $ sudo echo "*/10 * * * * www-data /var/www/WebPing/bin/webping" > /etc/cron.d/webping
+
+1. Register WebPing's specific web configuration to your Apache server:
+
+        $ ln -s /var/www/WebPing/apache.conf /etc/apache/conf.d/
+        $ /etc/init.d/apache stop
+        $ /etc/init.d/apache start
+
+1. Eventually change WebPing config file to match your needs:
+
+        $ vi /var/www/WebPing/webping.conf
 
 
 Troubleshooting
 ---------------
 
-Problem:  Step 3  of the install process above is stuck when running the
-          bootstrap script, and/or return a connection timeout error.
-Solution: This may be due to your machine/user not having access to internet.
-          Please carefully check your network/proxy configuration.
+<dl>
 
-Problem:  Pages seems to be checked regularly but with a constant delay.
-Solution: Check that the ntp server is properly configured and running on the
-          server side.
+  <dt>
+    Step 3  of the install process above is stuck when running the
+    bootstrap script, and/or return a connection timeout error.
+  </dt>
+  <dd>
+    This may be due to your machine/user not having access to internet.
+    Please carefully check your network/proxy configuration.
+  </dd>
+
+  <dt>
+    Pages seems to be checked regularly but with a constant delay.
+  </dt>
+  <dd>
+    Check that the ntp server is properly configured and running on the
+    server side.
+  </dd>
+
+</dl>
 
 
 Author
@@ -82,10 +102,10 @@ Author
 
 Contributors
 ------------
- 
-These people contributed code:
- * Matthieu Diehr <matthieu.diehr@gmail.com>
 
+These people contributed code:
+
+  * Matthieu Diehr <matthieu.diehr@gmail.com>
 
 
 License
@@ -108,33 +128,33 @@ Embedded external projects
 --------------------------
 
 WebPing uses external softwares, scripts, libraries and artworks:
-  
-  jQuery JavaScript Library v1.3.2
-  Copyright (c) 2009 John Resig
-  Dual licensed under the MIT and GPL licenses.
-  Source: http://jquery.com
 
-  jQuery.Flot plugin v0.6
-  Copyright (c) 2007-2009 IOLA and Ole Laursen
-  Released under the MIT license.
-  Source: http://code.google.com/p/flot
+        jQuery JavaScript Library v1.3.2
+        Copyright (c) 2009 John Resig
+        Dual licensed under the MIT and GPL licenses.
+        Source: http://jquery.com
 
-  jQuery.cuteTime plugin v1.1.1
-  Copyright (c) 2009 Jeremy Horn <jeremydhorn@gmail.com>, http://tpgblog.com	
-  Dual licensed under MIT and GPL.
-  Source: http://tpgblog.com/cutetime
+        jQuery.Flot plugin v0.6
+        Copyright (c) 2007-2009 IOLA and Ole Laursen
+        Released under the MIT license.
+        Source: http://code.google.com/p/flot
 
-  ExplorerCanvas
-  Copyright (c) 2006 Google Inc.
-  Released under the Apache License 2.0.
-  Source: http://code.google.com/p/explorercanvas
+        jQuery.cuteTime plugin v1.1.1
+        Copyright (c) 2009 Jeremy Horn <jeremydhorn@gmail.com>, http://tpgblog.com
+        Dual licensed under MIT and GPL.
+        Source: http://tpgblog.com/cutetime
 
-  Crystal Project Icons
-  Copyright (c) 2006-2007, Everaldo Coelho <everaldo@everaldo.com>, http://www.everaldo.com
-  Released under the LGPL license.
-  Source: http://www.kde-look.org/content/show.php/Crystal+Project?content=60475
+        ExplorerCanvas
+        Copyright (c) 2006 Google Inc.
+        Released under the Apache License 2.0.
+        Source: http://code.google.com/p/explorercanvas
 
-  Buildout's bootstrap.py
-  Copyright (c) 2006 Zope Corporation and Contributors
-  Distributed under the Zope Public License, version 2.1 (ZPL).
-  Source: http://svn.zope.org/repos/main/zc.buildout/trunk/bootstrap/bootstrap.py
+        Crystal Project Icons
+        Copyright (c) 2006-2007, Everaldo Coelho <everaldo@everaldo.com>, http://www.everaldo.com
+        Released under the LGPL license.
+        Source: http://www.kde-look.org/content/show.php/Crystal+Project?content=60475
+
+        Buildout's bootstrap.py
+        Copyright (c) 2006 Zope Corporation and Contributors
+        Distributed under the Zope Public License, version 2.1 (ZPL).
+        Source: http://svn.zope.org/repos/main/zc.buildout/trunk/bootstrap/bootstrap.py
