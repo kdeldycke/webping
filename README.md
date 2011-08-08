@@ -1,9 +1,6 @@
 WebPing
 =======
 
-Description
------------
-
 WebPing is a tiny utility to check availability of remote web pages. It
 produces an HTML report to show results. It can send mails alerts when a page
 can't be reached. It also search for a given string in the page and calculate
