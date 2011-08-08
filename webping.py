@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Current WebPing version
-__version__ = '0.3.dev'
+__version__ = '0.3'
 
 
 import csv

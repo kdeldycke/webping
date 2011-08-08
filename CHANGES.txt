@@ -1,8 +1,11 @@
 WebPing changelog
 =================
 
-0.3.dev - unreleased / work in progress 
----------------------------------------
+0.3 - 2011-08-08
+----------------
+
+ * Move WebPing from an internal Subversion repository to a public GitHub.
+   [2011-08-08] kdeldycke
 
  * Fix several non-standard HTML directives.
    [2011-01-21] kdeldycke
@@ -41,7 +44,7 @@ WebPing changelog
 0.1 - 2010-02-24
 ----------------
 
- * WebPing v0.1 is the last version based on "pure" Pyhton. Next versions will
+ * WebPing v0.1 is the last version based on "pure" Python. Next versions will
    embed a database and will use buildout.
    [2010-02-24] kdeldycke
 
@@ -49,5 +52,5 @@ WebPing changelog
 0.0 - 2009-10-05
 ----------------
 
- * First commit in SVN.
+ * First commit in our internal SVN.
    [2009-10-05] kdeldycke
