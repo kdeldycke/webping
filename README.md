@@ -37,7 +37,7 @@ Don't forget to adapt it to you needs and your environment.
 
     * On Ubuntu 11.04:
 
-            $ sudo apt-get install git gcc libsqlite-dev python-dev 
+            $ sudo apt-get install git gcc libsqlite3-dev python-dev
 
 1. Check out the latest version of WebPing from GitHub:
 
