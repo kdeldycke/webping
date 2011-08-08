@@ -29,10 +29,15 @@ Install and Setup steps
 This how-to is designed around our current internal use of WebPing.
 Don't forget to adapt it to you needs and your environment.
 
-1. Install required packages:
+1. Install required system packages.
 
-        $ sudo su
-        $ yum install subversion gcc sqlite-devel python-devel
+    * On RHEL 5.x:
+
+            $ sudo yum install subversion gcc sqlite-devel python-devel
+
+    * On Ubuntu 11.04:
+
+            $ sudo apt-get install subversion gcc libsqlite-dev python-dev 
 
 1. Check out the latest version of WebPing from our internal SVN repository:
 
