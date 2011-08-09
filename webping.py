@@ -100,7 +100,7 @@ def webping(config_path):
     try:
       req = urllib2.Request(check['url'])
       req.add_header('User-agent'     , "WebPing")
-      req.add_header('Referer'        , "http://intranet.example.com:82")
+      req.add_header('Referer'        , "http://github.com/kdeldycke/webping")
       req.add_header('Accept-encoding', 'gzip')
       start_time = datetime.datetime.now()
       fetcher = urllib2.urlopen(req)
