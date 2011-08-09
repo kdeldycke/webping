@@ -439,7 +439,7 @@ def webping(config_path):
 
   footer = """
       <div id="footer">
-        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, in %(render_time)s, by <a href="http://github.com/kdeldycke/webping/tree/%(repository_tag)s">%(generator)s</a>.</p>
+        <p>HTML report generated <abbr class="timestamp" title="%(update_time)s">%(update_time)s</abbr>, in %(render_time)s, by <a href="http://github.com/kdeldycke/webping/tree/%(repository_tag)s" target="_blank">%(generator)s</a>.</p>
       </div>
     </body>
   </html>""" % { 'update_time'   : datetime.datetime.now(conf['TIMEZONE']).strftime(DATETIME_FORMAT)
