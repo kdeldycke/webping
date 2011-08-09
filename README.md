@@ -39,17 +39,17 @@ Don't forget to adapt it to you needs and your environment.
 1. Check out the latest version of WebPing from GitHub:
 
         $ cd /var/www
-        $ git clone git://github.com/kdeldycke/webping.git WebPing
+        $ git clone git://github.com/kdeldycke/webping.git
 
 1. Fix rights and ownership (quick and dirty):
 
-        $ chmod -R 755 ./WebPing
-        $ chown -R www-data:www-data ./WebPing
+        $ chmod -R 755 ./webping
+        $ chown -R www-data:www-data ./webping
 
 1. Initialize the buildout environment:
 
         $ su - www-data
-        $ cd /var/www/WebPing
+        $ cd /var/www/webping
         $ python ./bootstrap.py --distribute
 
 1. Run buildout itself:
@@ -58,17 +58,17 @@ Don't forget to adapt it to you needs and your environment.
 
 1. Setup the cron file:
 
-        $ sudo echo "*/10 * * * * www-data /var/www/WebPing/bin/webping" > /etc/cron.d/webping
+        $ sudo echo "*/10 * * * * www-data /var/www/webping/bin/webping" > /etc/cron.d/webping
 
 1. Register WebPing's specific web configuration to your Apache server:
 
-        $ ln -s /var/www/WebPing/apache.conf /etc/apache/conf.d/
+        $ ln -s /var/www/webping/apache.conf /etc/apache/conf.d/
         $ /etc/init.d/apache stop
         $ /etc/init.d/apache start
 
 1. Eventually change WebPing config file to match your needs:
 
-        $ vi /var/www/WebPing/webping.conf
+        $ vi /var/www/webping/webping.conf
 
 
 Troubleshooting
