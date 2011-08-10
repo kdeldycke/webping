@@ -321,7 +321,10 @@ def webping(config_path):
                   , 'unchecked': padNumber(unchecked_count)
                   }
 
-  body += '\n'.join(["""<li><a href="mailto:%s">%s</a></li>""" %  tuple([email] * 2) for email in mailing_list]) or "<li>No one, so mail alerts are not activated.</li>"
+  if mailing_list:
+    body += '\n'.join(["""<li><a href="mailto:%s">%s</a></li>""" %  tuple([email] * 2) for email in mailing_list])
+  else:
+    body +="<li>No one, so mail alerts are not activated.</li>"
 
   body += """
         </ul>
