@@ -324,7 +324,7 @@ def webping(config_path):
   if mailing_list:
     body += '\n'.join(["""<li><a href="mailto:%s">%s</a></li>""" %  tuple([email] * 2) for email in mailing_list])
   else:
-    body +="<li>No one, so mail alerts are not activated.</li>"
+    body +="<li>No one, so <span class='warning'>mail alerts are desactivated</span>.</li>"
 
   body += """
         </ul>
