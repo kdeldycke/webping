@@ -173,7 +173,7 @@ def webping(config_path):
   # End of the data collecting phase, commit our changes in the database
   db.commit()
 
-  # Dump raw data in CSV files  
+  # Dump raw data in CSV files
   export_folder = os.path.abspath(os.path.join(script_folder, conf['EXPORT_FOLDER']))
   if not os.path.exists(export_folder):
     os.makedirs(export_folder)
@@ -220,10 +220,13 @@ def webping(config_path):
   elif unchecked_count + ok_count == total_count:
     global_status_icon = "excellent.png"
 
-  # Sort mail for beautiful display
-  conf['MAILING_LIST'].sort()
-  # As soon as we're done with data gathering, send alerts by mail if something is wrong
-  if fail_count > 0 or warning_count > 0:
+  # Here we send mail alerts if something is wrong as soon as we're done with data gathering.
+  mailing_list = conf.get('MAILING_LIST', [])
+  # Desactivate mail alerts if no one is in the mailing list
+  if mailing_list and (fail_count > 0 or warning_count > 0):
+    # Sort mail for beautiful display
+    mailing_list.sort()
+    conf['MAILING_LIST'] = mailing_list
     # Generate mail message header
     mail_template = """WebPing has detected:
     * %s failures
@@ -248,12 +251,12 @@ def webping(config_path):
     mail_msg = MIMEText(mail_template)
     mail_msg['From'] = conf['FROM_ADDRESS']
     mail_msg['Subject'] = "[WebPing] Alert: %s" % ', '.join([s for s in [fail_count and "%s failures" % fail_count or None, warning_count and "%s warnings" % warning_count or None] if s])
-    mail_msg['To'] = ', '.join(conf['MAILING_LIST'])
+    mail_msg['To'] = ', '.join(mailing_list)
     # Temporarily increase socket timeout to contact mail server
     socket.setdefaulttimeout(60)
     # Connect to server and send the mail alert
     mail_server = smtplib.SMTP(conf['MAIL_SERVER'])
-    mail_server.sendmail(conf['FROM_ADDRESS'], conf['MAILING_LIST'], mail_msg.as_string())
+    mail_server.sendmail(conf['FROM_ADDRESS'], mailing_list, mail_msg.as_string())
     mail_server.close()
     # Set back to a more reasonable time out
     socket.setdefaulttimeout(conf['TIMEOUT'])
@@ -265,7 +268,7 @@ def webping(config_path):
 
   # Compute current script signature
   signature = "WebPing v%s" % __version__
- 
+
   # Produce a nice HTML report ready to be published by Apache
   header = """<?xml version="1.0" encoding="utf-8"?>
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -318,7 +321,7 @@ def webping(config_path):
                   , 'unchecked': padNumber(unchecked_count)
                   }
 
-  body += '\n'.join(["""<li><a href="mailto:%s">%s</a></li>""" %  tuple([email] * 2) for email in conf['MAILING_LIST']])
+  body += '\n'.join(["""<li><a href="mailto:%s">%s</a></li>""" %  tuple([email] * 2) for email in mailing_list]) or "<li>No one, so mail alerts are not activated.</li>"
 
   body += """
         </ul>
