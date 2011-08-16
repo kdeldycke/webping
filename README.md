@@ -99,15 +99,13 @@ Troubleshooting
 Author
 ------
 
- * Kevin Deldycke <kevin@deldycke.com>
+ * [Kevin Deldycke](http://kevin.deldycke.com) - `kevin@deldycke.com`
 
 
 Contributors
 ------------
 
-These people contributed code:
-
-  * Matthieu Diehr <matthieu.diehr@gmail.com>
+  * Matthieu Diehr - `matthieu.diehr@gmail.com`
 
 
 License
