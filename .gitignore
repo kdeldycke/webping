@@ -3,10 +3,13 @@
 
 # Buildout
 bin/
+downloads/
 develop-eggs/
 eggs/
+fake-eggs/
 parts/
 .installed.cfg
+*egg-info
 
 # Generated files
 export/*
