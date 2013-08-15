@@ -98,16 +98,11 @@ Troubleshooting
 </dl>
 
 
-Author
-------
+Author & Contributors
+---------------------
 
- * [Kevin Deldycke](http://kevin.deldycke.com) - `kevin@deldycke.com`
-
-
-Contributors
-------------
-
-  * Matthieu Diehr - `matthieu.diehr@gmail.com`
+  * [Kevin Deldycke](https://github.com/kdeldycke)
+  * [Matthieu Diehr](https://github.com/d-matt)
 
 
 License
