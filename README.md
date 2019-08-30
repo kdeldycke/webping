@@ -9,7 +9,7 @@ page response time.
 This is basically a stupid and simple script. It was created at EDF for the
 very specific needs of the internal intranet team but can be used in other contexts.
 
-![WebPing in action](http://github.com/kdeldycke/webping/raw/master/screenshots/webping-dashboard.png)
+![WebPing in action](https://github.com/kdeldycke/webping/raw/master/screenshots/webping-dashboard.png)
 
 
 Requirements
